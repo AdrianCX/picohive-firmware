@@ -1,0 +1,451 @@
+title:
+  cartoon: Pico Gadget
+  clean: Pico Device
+  xeno: Pale Node — remote unit
+  fallout: Unit 7 — Terminal Link
+tab.config:
+  cartoon: Neural Rewiring
+  clean: Settings
+  xeno: Substrate
+  fallout: System Config
+hud.init:
+  cartoon: Warming up the tubes...
+  clean: Connecting
+  xeno: Priming
+  fallout: Establishing Link
+hud.retry:
+  cartoon: Re-Summon!
+  clean: Reconnect
+  xeno: Call Again
+  fallout: Reestablish Link
+skin.header:
+  cartoon: Look and Feel
+  clean: Appearance
+  xeno: Presentation
+  fallout: Terminal Interface
+skin.label:
+  cartoon: 'Skin:'
+  clean: Theme
+  xeno: 'Skin:'
+  fallout: 'Skin:'
+skin.optXeno:
+  cartoon: Xenoform Plate (bone and blood)
+  clean: Xenoform — bone, hairline, blood
+  xeno: Xenoform — bone, hairline, blood
+  fallout: Xenoform — bone, hairline, blood
+skin.optCartoon:
+  cartoon: The Original (loud and harmless)
+  clean: Original — loud and harmless
+  xeno: Original — loud and harmless
+  fallout: Original — loud and harmless
+cfg.wifi:
+  cartoon: Wifi Setup
+  clean: Wi-Fi
+  xeno: Carrier signal
+  fallout: Carrier Link
+cfg.wifiAuth:
+  cartoon: 'Auth:'
+  clean: Security
+  xeno: 'Handshake:'
+  fallout: 'Encryption:'
+cfg.web:
+  cartoon: Page login
+  clean: Page login
+  xeno: Gatekeeper
+  fallout: Terminal access
+cfg.wifiCountry:
+  cartoon: 'Country:'
+  clean: Country
+  xeno: 'Jurisdiction:'
+  fallout: 'Region:'
+cfg.wifiAuthWarn:
+  cartoon: WPA3 drops the connection every ~11 hours on this Wi-Fi chip, use WPA2 if the router allows it.
+cfg.wifiName:
+  cartoon: 'Name:'
+  clean: Network name
+  xeno: 'Name:'
+  fallout: 'SSID:'
+cfg.wifiPass:
+  cartoon: 'Password:'
+  clean: Password
+  xeno: 'Password:'
+  fallout: 'Passkey:'
+cfg.host:
+  cartoon: 'Host:'
+  clean: Host
+  xeno: 'Host:'
+  fallout: 'Host:'
+cfg.port:
+  cartoon: 'Port:'
+  clean: Port
+  xeno: 'Port:'
+  fallout: 'Port:'
+cfg.tls:
+  cartoon: 'SSL/TLS:'
+  clean: Use TLS
+  xeno: 'SSL/TLS:'
+  fallout: 'Encrypted:'
+cfg.user:
+  cartoon: 'User:'
+  clean: Username
+  xeno: 'User:'
+  fallout: 'Operator:'
+cfg.pass:
+  cartoon: 'Password:'
+  clean: Password
+  xeno: 'Password:'
+  fallout: 'Passkey:'
+app.title:
+  cartoon: Pico Gadget
+  clean: Pico Device
+  xeno: Pale Node
+  fallout: Unit 7
+app.tagline:
+  cartoon: ''
+  clean: Settings, connections and firmware for this board.
+  xeno: one board · one purpose · it does not ask what for
+  fallout: ''
+skin.optClean:
+  cartoon: Modern (honey, light or dark)
+  clean: Modern — honey, light or dark
+  xeno: Modern — honey, light or dark
+  fallout: Modern — honey, light or dark
+skin.optFallout:
+  cartoon: Fallout (phosphor, concrete, rust)
+  clean: Fallout — phosphor, concrete, rust
+  xeno: Fallout — phosphor, concrete, rust
+  fallout: Fallout — phosphor, concrete, rust
+cfg.global:
+  cartoon: Global Config
+  clean: Mode
+  xeno: Operating doctrine
+  fallout: Operating Directives
+cfg.localOnly:
+  cartoon: 'Local Only:'
+  clean: Local only
+  xeno: 'Sever all contact:'
+  fallout: 'Sever Uplink:'
+cfg.server:
+  cartoon: Server config
+  clean: Server
+  xeno: The distant listener
+  fallout: Remote Listener
+cfg.oneline:
+  cartoon: 'OneLine:'
+  clean: Config string
+  xeno: 'Glyph:'
+  fallout: 'Cipher:'
+cfgck.ok:
+  cartoon: Valid config for device
+cfgck.logport:
+  cartoon: log port
+cfgck.keybits:
+  cartoon: -bit log key
+cfgck.other:
+  cartoon: This config is for a different device than the one set up now.
+cfgck.bad:
+  cartoon: Not a valid config
+cfgck.e.b64:
+  cartoon: not a config string (the wrong text pasted?)
+cfgck.e.version:
+  cartoon: unknown format (export it again from the server)
+cfgck.e.short:
+  cartoon: too short (pasted incomplete?)
+cfgck.e.long:
+  cartoon: extra characters at the end
+cfgck.e.crc:
+  cartoon: checksum mismatch (a character was changed or lost)
+cfgck.e.key:
+  cartoon: bad log key length
+cfgck.e.field:
+  cartoon: a value inside is out of range
+cfgck.link:
+  cartoon: 'Server settings from the link filled in: check them and save.'
+cfg.logport:
+  cartoon: 'Logging Port:'
+  clean: Log port
+  xeno: 'Confessional:'
+  fallout: 'Diagnostic Port:'
+cfg.logkey:
+  cartoon: 'Log Key:'
+  clean: Log encryption key
+  xeno: 'Seal:'
+  fallout: 'Cipher Key:'
+sub.look:
+  cartoon: Basics
+  clean: General
+  xeno: Shell
+  fallout: Uplink
+sub.server:
+  cartoon: Uplink
+  clean: Server
+  xeno: Doctrine
+  fallout: Directives
+cfg.secretKept:
+  cartoon: Saved! Leave blank to keep it.
+  clean: Saved — leave blank to keep it
+  xeno: the sigil is kept. leave blank to keep it.
+  fallout: Stored. Leave blank to retain.
+cfg.forget:
+  cartoon: Forget
+  clean: Forget
+  xeno: Forget
+  fallout: Purge
+cfg.forgetting:
+  cartoon: Will be removed when you save.
+  clean: Removed when you save
+  xeno: it will be forgotten when the constants are bound.
+  fallout: Scheduled for purge on commit.
+cfg.bind:
+  cartoon: Bind the Constants
+  clean: Save settings
+  xeno: Bind the constants
+  fallout: Authorize Changes
+cfg.reboot:
+  cartoon: Reboot System
+  clean: Restart device
+  xeno: Cycle it through the dark
+  fallout: Initiate Cold Start
+cfg.wipe:
+  cartoon: Wipe Filesystem
+  clean: Erase storage
+  xeno: Erase every memory
+  fallout: Purge All Data
+rt.sending:
+  cartoon: Sending...
+  clean: Sending
+  xeno: Transmitting
+  fallout: Transmitting
+rt.sendSep:
+  cartoon: ' - '
+  clean: ' — '
+  xeno: ' — '
+  fallout: ' — '
+rt.sendTail:
+  cartoon: ' out'
+  clean: ' sent'
+  xeno: ' has left you'
+  fallout: ' away'
+rt.online:
+  cartoon: Wired in!
+  clean: Connected
+  xeno: Contact
+  fallout: Link Established
+rt.onlineDetail:
+  cartoon: socket open, fire away
+  clean: ready
+  xeno: the line is open. it has been open.
+  fallout: remote station acknowledges
+rt.connecting:
+  cartoon: Establishing neural link...
+  clean: Connecting
+  xeno: Reaching
+  fallout: Establishing Link
+rt.attempt:
+  cartoon: 'attempt #%n'
+  clean: attempt %n
+  xeno: call %n into the dark
+  fallout: handshake %n, no acknowledgement
+rt.attemptFirst:
+  cartoon: first attempt
+  clean: attempt 1
+  xeno: first call into the dark
+  fallout: first handshake
+rt.offline:
+  cartoon: Neural link severed!
+  clean: Disconnected
+  xeno: Alone
+  fallout: Link Severed
+rt.noReason:
+  cartoon: no link
+  clean: no connection
+  xeno: nothing answers
+  fallout: no carrier
+rt.sep:
+  cartoon: ' - '
+  clean: ' — '
+  xeno: ' — '
+  fallout: ' — '
+rt.attempts:
+  cartoon: ' attempt'
+  clean: ' attempt'
+  xeno: ' unanswered call'
+  fallout: ' handshake'
+rt.retryIn:
+  cartoon: ', retry in %ns'
+  clean: ', retrying in %ns'
+  xeno: ', calling again in %ns'
+  fallout: ', retrying in %ns'
+toast.contact:
+  cartoon: Wired in! The gadget is listening.
+  clean: Connected to the device.
+  xeno: Contact. Something on the other end is awake.
+  fallout: Link established. Remote station acknowledges.
+toast.lost:
+  cartoon: 'Lost: '
+  clean: 'Not delivered: '
+  xeno: 'Swallowed: '
+  fallout: 'Transmission lost: '
+toast.retry:
+  cartoon: . Trying again...
+  clean: . Retrying...
+  xeno: . Calling into the dark...
+  fallout: . Retrying...
+toast.reconnect:
+  cartoon: Re-summoning the gadget...
+  clean: Reconnecting...
+  xeno: Calling into the dark...
+  fallout: Reestablishing link...
+toast.noLink:
+  cartoon: ' went nowhere, there is no link!'
+  clean: ' was not sent — no connection.'
+  xeno: ' went nowhere. There is nothing out there.'
+  fallout: ' was not sent — no carrier.'
+toast.threw:
+  cartoon: ' blew up: '
+  clean: ' failed: '
+  xeno: ' came apart: '
+  fallout: ' faulted: '
+toast.sent:
+  cartoon: ' delivered! ('
+  clean: ' sent. ('
+  xeno: ' accepted. ('
+  fallout: ' acknowledged. ('
+err.noOpen:
+  cartoon: The tubes refused to open
+  clean: Could not open the connection
+  xeno: The channel would not open
+  fallout: Link would not initialize
+err.wire:
+  cartoon: The wire went sideways
+  clean: The connection failed
+  xeno: The carrier came apart
+  fallout: Carrier fault
+err.noAnswer:
+  cartoon: Nobody answered the door
+  clean: The device did not respond
+  xeno: Nothing answered the call
+  fallout: No acknowledgement from remote listener
+err.snapMid:
+  cartoon: the link snapped mid-flight
+  clean: the connection dropped
+  xeno: the carrier failed mid-transit
+  fallout: the carrier dropped mid-transmission
+err.noLink:
+  cartoon: there was no link
+  clean: there was no connection
+  xeno: there was no carrier
+  fallout: there was no carrier
+err.snapped:
+  cartoon: Link snapped
+  clean: Connection dropped
+  xeno: Carrier lost
+  fallout: Carrier dropped
+err.refused:
+  cartoon: Connection refused
+  clean: Connection refused
+  xeno: Refused
+  fallout: Connection refused
+err.neverLanded:
+  cartoon: Never landed!
+  clean: Not delivered
+  xeno: Never arrived
+  fallout: Transmission Failed
+err.diedOnWay:
+  cartoon: ' died on the way: '
+  clean: ' failed: '
+  xeno: ' was lost in transit: '
+  fallout: ' lost in transit: '
+err.neverLeft:
+  cartoon: Never left!
+  clean: Not sent
+  xeno: Never departed
+  fallout: Transmission Aborted
+err.noWire:
+  cartoon: ' had no wire to travel down'
+  clean: ' could not be sent — no connection'
+  xeno: ' had nothing to travel down'
+  fallout: ' could not be sent — no carrier'
+err.delivered:
+  cartoon: Delivered!
+  clean: Sent
+  xeno: Received
+  fallout: Acknowledged
+err.allTheWayOut:
+  cartoon: ', all the way out'
+  clean: ', complete'
+  xeno: ', the whole way out'
+  fallout: ', transfer complete'
+lbl.mindRead:
+  cartoon: Mind reading
+  clean: Status request
+  xeno: Sounding the line
+  fallout: Status query
+lbl.rewire:
+  cartoon: Neural rewiring
+  clean: Save settings
+  xeno: Binding the constants
+  fallout: Directive update
+lbl.reboot:
+  cartoon: Reboot
+  clean: Restart
+  xeno: Cold start
+  fallout: Cold start
+lbl.wipe:
+  cartoon: Filesystem wipe
+  clean: Erase storage
+  xeno: Erasure
+  fallout: Data purge
+
+lost:
+- signal lost
+- no reply
+- still here
+- nobody is coming
+- it kept the last one
+- who is reading this
+narration:
+  xeno:
+  - it has been awake since the last cold start.
+  - it does what it was built for. it does not ask what for.
+  - the work goes out. nothing reports back on where it ends up.
+  - something on the carrier band answered before you called.
+  - you will stop checking on it. it will not stop checking.
+  - the board holds its state all night. nobody is awake to see it.
+  - no one has asked this device for anything in 400 days.
+  - it does not know what it is for. it knows its commands.
+  - you are 4.2 light-seconds from the nearest witness.
+  - the last operator set it running and never came back.
+  - there is a reservation at dorsia. there has always been.
+  - it was given a handful of pins. that is all it was ever given.
+  - every command ends. the device is only there for the ending.
+  - somewhere the same firmware is running for nobody at all.
+  - it has seen inputs it had no category for. those went unreported.
+  - the loop does not sleep. it waits, which is a different arrangement.
+  - you asked it to tell you when the work was done. it never asks back.
+  fallout:
+  - the unit has been running since the last cold start.
+  - the unit answers when queried. it has not been queried today.
+  - the clock drifts a little every day. it always has.
+  - nothing has queried this unit in 400 days. it runs anyway.
+  - the uplink answers on schedule and has never once said anything.
+  - somebody chalked a number on this wall and then stopped counting.
+  - the alert goes out over the wire. whether it arrives is not measured here.
+  - the concrete was rated for fifty years. it was poured well before that.
+  - there is no relief scheduled. there was never a schedule.
+  - the generator runs four hours a day. nobody set that. it settled there.
+  - the configuration was set by hand. by whom is not recorded.
+  - the east wall is warm to the touch. it has been warm for years.
+  - the command channel is open and has been open. command has not been on it.
+  - the ROM will outlive the operator. that was in the specification.
+  cartoon:
+  - All set up and ready when you are. ✨
+  - 'Fun fact: this whole thing runs on a very small, very proud chip.'
+  - Wi-Fi connected, settings saved, everything exactly where it should be.
+  - Settings are kept encrypted on the board itself. 🔒
+  - It sips power while it waits. You could forget this thing exists!
+  - It never gets bored of waiting for its turn. 🌟
+  - Thanks for stopping by. Have a lovely day! 👋
+  - You are doing great. The little chip agrees.
+  - Hello from a very small board that is very glad you stopped by.
+  clean: cartoon

@@ -1,0 +1,2440 @@
+/* --- ACROSS EVERY SKIN --- */
+/* There is deliberately no mobile viewport here: a handset lays the page
+   out at the browser's default 980px and scales it down, so it arrives
+   looking like the desktop page and can be pinched into.
+
+   What a handset must NOT do is then rewrite the type sizes underneath
+   that. Left alone, mobile Blink and Gecko inflate each block of text by a
+   factor worked out from the width of the block it sits in -- so the
+   auto-width buttons (#upload, #load) and the inline labels in the control
+   panels come out a size or two above the full-width buttons right next to
+   them, which is the only thing that ever looked wrong here.
+
+   Gecko's prefixed property predates percentage values and only takes the
+   keyword, hence the odd one out. */
+    html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: none;
+    text-size-adjust: 100%;
+}
+
+/* ============ SKIN: XENOFORM ============ */
+
+/* --- XENOFORM PLATE : bone, hairline, and the occasional drop --- */
+    html.t-xeno {
+    --paper:     #F7F5EF;   /* eggshell */
+    --bone:      #EFECE3;
+    --linen:     #FCFBF7;
+    --ash:       #26241F;
+    --graphite:  #5A554D;
+    --pale:      #9C958A;
+    --hair:      rgba(38, 36, 31, 0.16);
+    --hair-soft: rgba(38, 36, 31, 0.08);
+    --viridian:  #1F6E5E;   /* the only colour not from here */
+    --viridian-l:#4E9A88;
+    --blood:     #8E1B23;
+    --blood-fresh:#B4121F;
+    --amber:     #A97B1F;
+    --serif:     'Didot', 'Bodoni MT', 'Hoefler Text', Garamond, 'Times New Roman', serif;
+    --sans:      'Optima', 'Gill Sans', 'Gill Sans MT', 'Futura', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --mono:      'IBM Plex Mono', 'JetBrains Mono', 'Courier New', ui-monospace, monospace;
+}
+
+    html.t-xeno ::selection { background: var(--blood); color: var(--paper); }
+
+    html.t-xeno { background: var(--bone); }
+
+    html.t-xeno body {
+    font-family: var(--sans);
+    color: var(--ash);
+    margin: 0;
+    padding: 42px 22px 90px;
+    min-height: 100vh;
+    letter-spacing: 0.03em;
+    background-color: var(--bone);
+    background-image:
+        radial-gradient(70vw 46vh at 76% -12%, rgba(255, 255, 255, 0.95), transparent 68%),
+        radial-gradient(60vw 44vh at 6% 104%,  rgba(78, 154, 136, 0.12), transparent 66%),
+        linear-gradient(180deg, #FAF8F2 0%, var(--bone) 46%, #E7E3D8 100%);
+    background-attachment: fixed;
+    animation: worldDrift 74s ease-in-out infinite alternate;
+}
+
+@keyframes worldDrift {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: -3vw 1vh, 4vw -2vh, 0 0; }
+}
+
+/* Laid paper, held up to a sun that is much too close. */
+    html.t-xeno body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(0deg, rgba(38,36,31,0.030) 0 1px, transparent 1px 4px),
+        repeating-linear-gradient(90deg, rgba(38,36,31,0.018) 0 1px, transparent 1px 3px),
+        radial-gradient(120vw 92vh at 50% 46%, transparent 58%, rgba(38,36,31,0.13) 100%);
+}
+
+
+/* --- MASTHEAD --- */
+/* No text above the tab bar on any skin now. The rules below are kept so
+   the block still reads as a whole, but nothing here is painted. */
+    html.t-xeno .masthead { display: none !important; }
+
+    html.t-xeno .masthead {
+    max-width: 850px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+    html.t-xeno .sigil {
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--viridian);
+    animation: sigilBreathe 17s ease-in-out infinite;
+}
+
+@keyframes sigilBreathe {
+    0%, 100% { opacity: 0.45; transform: rotate(0deg); }
+    50%      { opacity: 1;    transform: rotate(180deg); }
+}
+
+    html.t-xeno h1 {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: 0.46em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin: 0;
+    position: relative;
+}
+
+/* Tasteful thickness. One drop of colour, placed. */
+    html.t-xeno h1::after { content: "."; color: var(--blood); }
+
+    html.t-xeno .subtitle {
+    flex: 1 1 100%;
+    font-size: 0.68rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--pale);
+    margin-top: 9px;
+}
+
+/* The name comes apart slowly, then remembers itself. */
+    html.t-xeno .glitch::before,
+html.t-xeno .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+}
+    html.t-xeno .glitch::before { color: var(--blood);    animation: glitchA 15s ease-in-out infinite; }
+    html.t-xeno .glitch::after { color: var(--viridian); animation: glitchB 15s ease-in-out infinite; }
+
+@keyframes glitchA {
+    0%, 62%, 100% { clip-path: inset(100% 0 0 0); transform: none; opacity: 0; }
+    70% { clip-path: inset(8%  0 64% 0); transform: translate(-3px, 0);  opacity: 0.85; }
+    80% { clip-path: inset(46% 0 28% 0); transform: translate(4px, 1px); opacity: 0.6; }
+    90% { clip-path: inset(72% 0 6% 0);  transform: translate(-2px, 1px); opacity: 0.4; }
+    97% { clip-path: inset(100% 0 0 0); opacity: 0; }
+}
+
+@keyframes glitchB {
+    0%, 64%, 100% { clip-path: inset(100% 0 0 0); transform: none; opacity: 0; }
+    73% { clip-path: inset(26% 0 46% 0); transform: translate(3px, 1px);   opacity: 0.7; }
+    84% { clip-path: inset(4%  0 80% 0); transform: translate(-4px, -1px); opacity: 0.5; }
+    93% { clip-path: inset(58% 0 16% 0); transform: translate(2px, 0);     opacity: 0.35; }
+    98% { clip-path: inset(100% 0 0 0); opacity: 0; }
+}
+
+/* --- THE CARD --- */
+    html.t-xeno .container {
+    max-width: 850px;
+    margin: 0 auto;
+    background-color: var(--paper);
+    /* A little spatter in the corner. Nobody will notice. */
+    background-image:
+        radial-gradient(circle at 93.5% 96.5%, rgba(142,27,35,0.20) 0 2.5px, transparent 3px),
+        radial-gradient(circle at 95.8% 94.2%, rgba(142,27,35,0.14) 0 1.5px, transparent 2px),
+        radial-gradient(circle at 91.2% 93.4%, rgba(142,27,35,0.10) 0 1px,   transparent 1.6px),
+        radial-gradient(circle at 96.8% 97.8%, rgba(142,27,35,0.08) 0 1px,   transparent 1.6px);
+    border: 1px solid var(--hair);
+    border-radius: 1px;
+    padding: 30px 30px 34px;
+    position: relative;
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 18px 50px -30px rgba(38,36,31,0.45),
+        0 2px 10px -6px rgba(38,36,31,0.2);
+}
+
+    html.t-xeno .container::before,
+html.t-xeno .container::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--ash);
+    opacity: 0.4;
+    pointer-events: none;
+}
+    html.t-xeno .container::before { top: 7px;    left: 7px;  border-right: 0; border-bottom: 0; }
+    html.t-xeno .container::after { bottom: 7px; right: 7px; border-left: 0;  border-top: 0; }
+
+/* --- THE BLEED --- */
+/* A hairline along the top edge that occasionally lets something through. */
+    html.t-xeno .bleed {
+    position: absolute;
+    left: -1px; right: -1px;
+    top: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--blood) 14%, var(--blood-fresh) 50%, var(--blood) 86%, transparent);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+    html.t-xeno .bleed i {
+    position: absolute;
+    top: 1px;
+    width: 2px;
+    height: 0;
+    border-radius: 0 0 2px 2px;
+    background: linear-gradient(180deg, var(--blood-fresh), rgba(142,27,35,0.15));
+}
+
+    html.t-xeno .bleed i::after {
+    content: "";
+    position: absolute;
+    left: -2px;
+    bottom: -4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blood);
+    opacity: 0;
+}
+
+    html.t-xeno .bleed .d1 { left: 17%; animation: seep 23s ease-in infinite; }
+    html.t-xeno .bleed .d2 { left: 54%; animation: seep 31s ease-in infinite 9s; }
+    html.t-xeno .bleed .d3 { left: 81%; animation: seep 41s ease-in infinite 19s; }
+
+    html.t-xeno .bleed .d1::after { animation: bead 23s ease-in infinite; }
+    html.t-xeno .bleed .d2::after { animation: bead 31s ease-in infinite 9s; }
+    html.t-xeno .bleed .d3::after { animation: bead 41s ease-in infinite 19s; }
+
+@keyframes seep {
+    0%, 8%   { height: 0;    opacity: 0.9; }
+    55%      { height: 34px; opacity: 0.9; }
+    82%      { height: 52px; opacity: 0.55; }
+    96%, 100%{ height: 52px; opacity: 0; }
+}
+
+@keyframes bead {
+    0%, 50%  { opacity: 0; transform: translateY(0); }
+    70%      { opacity: 0.85; transform: translateY(0); }
+    92%      { opacity: 0.5;  transform: translateY(26px); }
+    100%     { opacity: 0;    transform: translateY(46px); }
+}
+
+/* --- CONTROLS --- */
+    html.t-xeno button,
+html.t-xeno input[type="button"],
+html.t-xeno input[type="submit"],
+html.t-xeno .tablinks {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 13px 20px;
+    margin: 7px 0;
+    color: var(--ash);
+    background-color: var(--linen);
+    border: 1px solid var(--hair);
+    border-radius: 1px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
+    transition: color .5s ease, background-color .5s ease, border-color .5s ease, box-shadow .5s ease, letter-spacing .5s ease;
+}
+
+/* Something passes under the surface before you commit. */
+    html.t-xeno button::after,
+html.t-xeno input[type="button"]::after,
+html.t-xeno input[type="submit"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(142,27,35,0.13), transparent);
+    transform: translateX(-110%);
+    transition: transform 1.6s cubic-bezier(.25,.8,.3,1);
+    pointer-events: none;
+}
+
+    html.t-xeno button:hover,
+html.t-xeno input[type="button"]:hover,
+html.t-xeno input[type="submit"]:hover {
+    color: var(--paper);
+    background-color: var(--ash);
+    border-color: var(--ash);
+    letter-spacing: 0.3em;
+    box-shadow: 0 8px 22px -14px rgba(38,36,31,0.9);
+}
+    html.t-xeno button:hover::after,
+html.t-xeno input[type="button"]:hover::after,
+html.t-xeno input[type="submit"]:hover::after {
+    transform: translateX(110%);
+}
+
+    html.t-xeno button:active,
+html.t-xeno input[type="button"]:active,
+html.t-xeno input[type="submit"]:active {
+    background-color: var(--blood);
+    border-color: var(--blood);
+    color: var(--paper);
+}
+
+    html.t-xeno #btnLoad,
+html.t-xeno #show { width: 100%; border-bottom: 2px solid var(--blood); }
+    html.t-xeno #download { width: 100%; color: var(--graphite); }
+    html.t-xeno #upload,
+html.t-xeno #load { color: var(--viridian); border-color: rgba(31,110,94,0.35); }
+    html.t-xeno #upload:hover,
+html.t-xeno #load:hover { color: var(--paper); background-color: var(--viridian); border-color: var(--viridian); }
+
+    html.t-xeno .danger { color: var(--blood) !important; border-color: rgba(142,27,35,0.4) !important; }
+    html.t-xeno .danger:hover { color: var(--paper) !important; background-color: var(--blood) !important; border-color: var(--blood) !important; }
+
+/* --- TABS --- */
+    html.t-xeno .tab {
+    display: flex;
+    gap: 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--hair);
+    padding: 0 0 14px;
+    margin-bottom: 16px;
+}
+    html.t-xeno .tablinks {
+    flex: 1 1 0;
+    margin: 0;
+    color: var(--pale);
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+    html.t-xeno .tablinks:hover {
+    color: var(--ash);
+    background-color: rgba(38,36,31,0.04);
+    border-color: transparent;
+    box-shadow: none;
+    letter-spacing: 0.28em;
+}
+    html.t-xeno .tablinks.active {
+    color: var(--ash);
+    background-color: transparent;
+    box-shadow: none;
+}
+    html.t-xeno .tablinks.active::before {
+    content: "";
+    position: absolute;
+    left: 22%; right: 22%;
+    bottom: -1px;
+    height: 2px;
+    background: var(--blood);
+}
+
+/* --- FIELDS : the values stay perfectly legible --- */
+    html.t-xeno input[type="text"],
+html.t-xeno select,
+html.t-xeno input[type="file"] {
+    font-family: var(--mono);
+    font-size: 0.84rem;
+    color: var(--ash);
+    background-color: var(--linen);
+    border: 1px solid var(--hair);
+    border-bottom: 1px solid rgba(38,36,31,0.3);
+    border-radius: 1px;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+    caret-color: var(--blood);
+    transition: border-color .45s ease, box-shadow .45s ease, background-color .45s ease;
+}
+
+    html.t-xeno input[type="text"]:focus,
+html.t-xeno select:focus,
+html.t-xeno input[type="file"]:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: var(--hair);
+    border-bottom-color: var(--blood);
+    box-shadow: 0 2px 0 -1px var(--blood), 0 10px 26px -20px rgba(38,36,31,0.8);
+}
+
+    html.t-xeno input[type="text"]::placeholder { color: var(--pale); }
+    html.t-xeno select option { background: var(--linen); color: var(--ash); }
+
+    html.t-xeno input[type="file"] { color: var(--graphite); cursor: pointer; }
+    html.t-xeno input[type="file"]::file-selector-button {
+    font-family: var(--sans);
+    font-size: 0.64rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ash);
+    background: transparent;
+    border: 1px solid var(--hair);
+    border-radius: 1px;
+    padding: 7px 14px;
+    margin-right: 14px;
+    cursor: pointer;
+    transition: background-color .4s ease, color .4s ease;
+}
+    html.t-xeno input[type="file"]::file-selector-button:hover { background: var(--ash); color: var(--paper); }
+
+    html.t-xeno input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border: 1px solid rgba(38,36,31,0.35);
+    border-radius: 1px;
+    background: var(--linen);
+    vertical-align: -2px;
+    margin: 0 10px 0 0;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .4s ease;
+}
+    html.t-xeno input[type="checkbox"]:checked { border-color: var(--ash); }
+/* Checked is not a tick. It is a drop. */
+    html.t-xeno input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--blood);
+}
+
+    html.t-xeno label + input[type="checkbox"] { margin-left: 30px; }
+
+    html.t-xeno label {
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    font-weight: 400;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--graphite);
+}
+
+/* --- THE PLATE --- */
+    html.t-xeno #canvas {
+    border: 1px solid var(--hair);
+    border-radius: 1px;
+    background-color: #fff;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto 18px;
+    box-shadow: 0 14px 40px -28px rgba(38,36,31,0.9), 0 0 0 6px var(--linen), 0 0 0 7px var(--hair-soft);
+    animation: plateFlicker 21s ease-in-out infinite;
+}
+
+@keyframes plateFlicker {
+    0%, 88%, 100% { opacity: 1; filter: none; }
+    92%  { opacity: 0.93; filter: sepia(0.18) hue-rotate(-8deg); }
+    96%  { opacity: 0.97; filter: contrast(1.06); }
+}
+
+/* --- PANELS --- */
+    html.t-xeno .control-panel {
+    background-color: var(--linen);
+    border: 1px solid var(--hair-soft);
+    border-left: 2px solid var(--ash);
+    border-radius: 1px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+    html.t-xeno table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 9px;
+    background-color: var(--linen);
+    border: 1px solid var(--hair-soft);
+    border-left: 2px solid var(--viridian);
+    border-radius: 1px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+    html.t-xeno th {
+    font-family: var(--serif);
+    text-align: left;
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--ash);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hair);
+}
+
+    html.t-xeno td { vertical-align: middle; }
+
+    html.t-xeno .coords-box {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--graphite);
+    background: var(--linen);
+    border: 1px solid var(--hair-soft);
+    border-radius: 1px;
+    padding: 5px 14px;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+    html.t-xeno .tabcontent {
+    display: none;
+    animation: popIn 1.1s cubic-bezier(.2,.7,.2,1);
+}
+
+@keyframes popIn {
+    0%   { opacity: 0; transform: translateY(8px); filter: blur(5px); }
+    70%  { filter: blur(0); }
+    100% { opacity: 1; transform: none; filter: none; }
+}
+
+/* --- TELEMETRY --- */
+    html.t-xeno .hud {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    background: var(--linen);
+    border: 1px solid var(--hair-soft);
+    border-radius: 1px;
+    padding: 8px 14px;
+    min-height: 24px;
+    margin-bottom: 16px;
+    white-space: nowrap;
+    transition: border-color .6s ease;
+}
+
+    html.t-xeno .hud-lamp {
+    flex: 0 0 7px;
+    width: 7px;
+    height: 7px;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--pale);
+    box-sizing: border-box;
+}
+
+    html.t-xeno .hud-state {
+    flex: 0 0 auto;
+    font-size: 0.64rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ash);
+}
+
+    html.t-xeno .hud-detail {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    color: var(--pale);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    html.t-xeno .hud-bar {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background: var(--blood);
+    transition: width 0.1s linear;
+}
+
+    html.t-xeno #hud-retry {
+    display: none;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 4px 12px;
+    font-size: 0.6rem;
+}
+
+/* HUD states */
+    html.t-xeno .hud-connecting .hud-state { color: var(--amber); }
+    html.t-xeno .hud-connecting .hud-lamp { background-color: var(--amber); animation: lampPulse 3.4s ease-in-out infinite; }
+
+    html.t-xeno .hud-online .hud-state { color: var(--viridian); }
+    html.t-xeno .hud-online .hud-lamp { background-color: var(--viridian); animation: lampBlink 6s ease-in-out infinite; }
+
+    html.t-xeno .hud-busy .hud-state { color: var(--viridian); }
+    html.t-xeno .hud-busy .hud-lamp { background-color: var(--viridian); animation: lampWobble 2.2s ease-in-out infinite; }
+    html.t-xeno .hud-busy .hud-bar { display: block; }
+
+    html.t-xeno .hud-ok .hud-state { color: var(--viridian); }
+    html.t-xeno .hud-ok .hud-lamp { background-color: var(--viridian); }
+
+    html.t-xeno .hud-fail { border-color: rgba(142,27,35,0.45); animation: hudShake 1.6s ease-in-out; }
+    html.t-xeno .hud-fail .hud-state { color: var(--blood); }
+    html.t-xeno .hud-fail .hud-lamp { background-color: var(--blood); }
+    html.t-xeno .hud-fail #hud-retry { display: inline-block; }
+
+    html.t-xeno .hud-offline { border-color: rgba(142,27,35,0.35); }
+    html.t-xeno .hud-offline .hud-state { color: var(--blood); }
+    html.t-xeno .hud-offline .hud-lamp { background-color: var(--blood); animation: lampPulse 3.4s ease-in-out infinite; }
+    html.t-xeno .hud-offline #hud-retry { display: inline-block; }
+
+@keyframes lampPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.18; } }
+@keyframes lampBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes lampWobble { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.6); } }
+
+@keyframes hudShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-2px); }
+}
+
+    html.t-xeno body.ws-busy { cursor: progress; }
+    html.t-xeno body.ws-busy .container button:not(.tablinks):not(#hud-retry),
+html.t-xeno body.ws-busy .container input[type="button"],
+html.t-xeno body.ws-busy .container input[type="submit"] { opacity: 0.4; }
+
+/* --- CORRESPONDENCE --- */
+    html.t-xeno .toasts {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    max-width: 350px;
+}
+
+    html.t-xeno .toast {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    padding: 11px 16px;
+    border: 1px solid var(--hair);
+    border-left: 2px solid var(--ash);
+    border-radius: 1px;
+    background: var(--paper);
+    color: var(--ash);
+    box-shadow: 0 16px 40px -26px rgba(38,36,31,0.9);
+    animation: popIn 0.7s cubic-bezier(.2,.7,.2,1);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+    html.t-xeno .toast::before { content: "\2014  "; color: var(--pale); }
+    html.t-xeno .toast.ok { border-left-color: var(--viridian); }
+    html.t-xeno .toast.bad { border-left-color: var(--blood); color: var(--blood); background: #FBF3F2; }
+    html.t-xeno .toast.info { border-left-color: var(--amber); }
+    html.t-xeno .toast.out { opacity: 0; transform: translateX(26px); }
+
+/* --- THE WHISPER --- */
+/* It sits inside the card, bottom left, below the last control: one line
+   across the full width, clipped with an ellipsis if it runs long. The
+   line of space is always held so nothing shifts when it speaks. */
+    html.t-xeno #whisper {
+    display: block;
+    margin: 26px 0 0;
+    width: 100%;
+    min-height: 1.2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    font-family: var(--serif);
+    font-size: 0.78rem;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: rgba(142, 27, 35, 0.42);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+    html.t-xeno #whisper.on { opacity: 1; }
+
+/* --- SLOW FAILURE --- */
+/* It does not snap and it does not shudder. The light over the plate goes
+   wrong for a few seconds and then it is fine again, which is worse. */
+    html.t-xeno #tear {
+    position: fixed;
+    inset: 0;
+    z-index: 9996;
+    pointer-events: none;
+    background: rgba(142,27,35,0.10);
+    mix-blend-mode: multiply;
+    opacity: 0;
+}
+
+    html.t-xeno.gl #tear { animation: tearRip 3.4s ease-in-out both; }
+
+/* The light in the room changes and changes back. Nothing is displaced. */
+@keyframes tearRip {
+    0%   { opacity: 0;    background: rgba(142,27,35,0.10); }
+    26%  { opacity: 0.55; background: rgba(142,27,35,0.10); }
+    58%  { opacity: 0.45; background: rgba(31,110,94,0.10); }
+    100% { opacity: 0;    background: rgba(142,27,35,0.10); }
+}
+
+    html.t-xeno.gl .container {
+    animation: rupture 3.4s ease-in-out both;
+}
+
+@keyframes rupture {
+    0%   { background-color: var(--paper); }
+    26%  { background-color: #F2ECE3; }
+    58%  { background-color: #F4F0EA; }
+    100% { background-color: var(--paper); }
+}
+
+/* No blackout. A whiteout. Everything goes pristine and stays that way a
+   moment too long. */
+    html.t-xeno #blackout {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.4s ease;
+}
+    html.t-xeno #blackout span {
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    font-style: italic;
+    letter-spacing: 0.5em;
+    text-transform: lowercase;
+    color: var(--blood);
+    opacity: 0;
+    transition: opacity 2s ease 0.4s;
+}
+    html.t-xeno.void #blackout { opacity: 1; }
+    html.t-xeno.void #blackout span { opacity: 0.9; }
+
+@media (prefers-reduced-motion: reduce) {
+
+        html.t-xeno body,
+html.t-xeno .sigil,
+html.t-xeno #canvas,
+html.t-xeno .glitch::before,
+html.t-xeno .glitch::after,
+html.t-xeno .bleed i,
+html.t-xeno .bleed i::after,
+html.t-xeno.gl .container,
+html.t-xeno.gl #tear { animation: none !important; }
+        html.t-xeno #blackout { display: none; }
+        html.t-xeno #whisper,
+html.t-cartoon #whisper { transition: none !important; }
+
+}
+
+
+/* ============ SKIN: ORIGINAL ============ */
+
+/* --- CARTOON STYLES --- */
+    html.t-cartoon {
+    --c-yellow: #FFEB3B;
+    --c-pink: #FF69B4;
+    --c-cyan: #00BCD4;
+    --c-green: #76FF03;
+    --c-white: #ffffff;
+    --c-black: #000000;
+    --border-thick: 3px solid var(--c-black);
+    --shadow-hard: 5px 5px 0px var(--c-black);
+    --shadow-press: 1px 1px 0px var(--c-black);
+}
+
+    html.t-cartoon body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
+
+    margin: 0;
+    padding: 20px;
+}
+
+/* Main Card */
+    html.t-cartoon .container {
+    max-width: 850px;
+    margin: 0 auto;
+    background-color: var(--c-white);
+    border: var(--border-thick);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Rainbow Top Bar */
+    html.t-cartoon .rainbow-bar {
+    height: 15px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    background-size: 200% 100%;
+    animation: o_rainbowMove 3s linear infinite;
+    border-bottom: var(--border-thick);
+}
+
+@keyframes o_rainbowMove {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 0%; }
+}
+
+    html.t-cartoon h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    color: var(--c-black);
+    text-shadow: 3px 3px 0px var(--c-yellow);
+    -webkit-text-stroke: 1px black;
+}
+
+/* --- BOXY BUTTONS --- */
+    html.t-cartoon button,
+html.t-cartoon input[type="button"],
+html.t-cartoon input[type="submit"],
+html.t-cartoon .tablinks {
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 12px 20px;
+    margin: 8px;
+    border: var(--border-thick);
+    box-shadow: var(--shadow-hard);
+    transition: all 0.1s ease;
+    display: inline-block;
+    background-color: var(--c-white);
+    color: var(--c-black);
+}
+
+/* Button Colors */
+    html.t-cartoon button:nth-child(odd),
+html.t-cartoon input[type="button"]:nth-child(odd) { background-color: var(--c-cyan); }
+    html.t-cartoon button:nth-child(even),
+html.t-cartoon input[type="button"]:nth-child(even) { background-color: var(--c-pink); }
+
+    html.t-cartoon #upload { background-color: var(--c-green) !important; }
+    html.t-cartoon #load { background-color: var(--c-yellow) !important; }
+
+/* Hover & Active States */
+    html.t-cartoon button:hover,
+html.t-cartoon input[type="button"]:hover,
+html.t-cartoon input[type="submit"]:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0px var(--c-black);
+}
+
+    html.t-cartoon button:active,
+html.t-cartoon input[type="button"]:active,
+html.t-cartoon input[type="submit"]:active,
+html.t-cartoon .tablinks.active {
+    transform: translate(4px, 4px);
+    box-shadow: var(--shadow-press);
+}
+
+/* Tabs Specifics */
+    html.t-cartoon .tab {
+    display: flex;
+    justify-content: center;
+    background-color: #eee;
+    border: var(--border-thick);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 7px;
+}
+    html.t-cartoon .tablinks {
+    background-color: var(--c-white) !important;
+    flex-grow: 1;
+    margin: 0 5px;
+}
+    html.t-cartoon .tablinks.active {
+    background-color: var(--c-yellow) !important;
+}
+
+/* Inputs */
+    html.t-cartoon input[type="text"],
+html.t-cartoon select,
+html.t-cartoon input[type="file"] {
+    border: var(--border-thick);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border-radius: 0; /* Boxy */
+}
+
+    html.t-cartoon input[type="text"]:focus,
+html.t-cartoon select:focus {
+    background-color: #E0F7FA;
+    outline: none;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+}
+
+/* Checkboxes */
+    html.t-cartoon input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+    accent-color: var(--c-pink);
+    border: var(--border-thick);
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+    html.t-cartoon label {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Canvas Frame */
+    html.t-cartoon #canvas {
+    border: var(--border-thick);
+    box-shadow: var(--shadow-hard);
+    background-color: #fff;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+/* Layout Tables */
+    html.t-cartoon table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background-color: #fff;
+    border: 2px dashed var(--c-black);
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+    html.t-cartoon th {
+    text-align: left;
+    font-size: 1.2rem;
+    border-bottom: 4px solid var(--c-black);
+    margin-bottom: 10px;
+    color: var(--c-pink);
+    text-transform: uppercase;
+}
+
+/* Utility */
+    html.t-cartoon .tabcontent {
+    display: none;
+    animation: o_popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes o_popIn {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+    html.t-cartoon .control-panel {
+    background-color: #FFF9C4; /* Light Yellow */
+    border: var(--border-thick);
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+    html.t-cartoon .coords-box {
+    background-color: var(--c-black);
+    color: var(--c-white);
+    padding: 5px 10px;
+    font-family: monospace;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* --- CONNECTION HUD --- */
+/* Deliberately a thin single line strip so it reads as a status bar and
+   not as one of the panels. */
+    html.t-cartoon .hud {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--c-white);
+    border: 2px solid var(--c-black);
+    box-shadow: 3px 3px 0px var(--c-black);
+    border-radius: 8px;
+    padding: 4px 10px;
+    min-height: 24px;
+    margin-bottom: 7px;
+    white-space: nowrap;
+}
+
+    html.t-cartoon .hud-lamp {
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
+    border: 2px solid var(--c-black);
+    border-radius: 50%;
+    background-color: #bdbdbd;
+    box-sizing: border-box;
+}
+
+    html.t-cartoon .hud-state {
+    flex: 0 0 auto;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+    html.t-cartoon .hud-detail {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.78rem;
+    color: #444;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sits on the bottom edge of the strip, so progress costs no height. */
+    html.t-cartoon .hud-bar {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 0;
+    background: repeating-linear-gradient(45deg, var(--c-cyan) 0 6px, var(--c-yellow) 6px 12px);
+    transition: width 0.1s linear;
+}
+
+    html.t-cartoon #hud-retry {
+    display: none;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 2px 10px;
+    font-size: 0.72rem;
+    line-height: 16px;
+    border: 2px solid var(--c-black);
+    box-shadow: 2px 2px 0px var(--c-black);
+    background-color: var(--c-yellow) !important;
+}
+
+/* HUD states */
+    html.t-cartoon .hud-connecting { background-color: #FFFDE7; }
+    html.t-cartoon .hud-connecting .hud-lamp { background-color: var(--c-yellow); animation: o_lampPulse 1s ease-in-out infinite; }
+
+    html.t-cartoon .hud-online { background-color: #F1FFE7; }
+    html.t-cartoon .hud-online .hud-lamp { background-color: var(--c-green); animation: o_lampBlink 2.5s infinite; }
+
+    html.t-cartoon .hud-busy { background-color: #E0F7FA; }
+    html.t-cartoon .hud-busy .hud-lamp { background-color: var(--c-cyan); animation: o_lampWobble 0.5s infinite; }
+    html.t-cartoon .hud-busy .hud-bar { display: block; }
+
+    html.t-cartoon .hud-ok { background-color: #F1FFE7; }
+    html.t-cartoon .hud-ok .hud-lamp { background-color: var(--c-green); }
+
+    html.t-cartoon .hud-fail { background-color: #FFEBEE; animation: o_hudShake 0.4s; }
+    html.t-cartoon .hud-fail .hud-lamp { background-color: #FF1744; }
+    html.t-cartoon .hud-fail #hud-retry { display: inline-block; }
+
+    html.t-cartoon .hud-offline { background-color: #FFEBEE; }
+    html.t-cartoon .hud-offline .hud-lamp { background-color: var(--c-pink); animation: o_lampPulse 1s ease-in-out infinite; }
+    html.t-cartoon .hud-offline #hud-retry { display: inline-block; }
+
+@keyframes o_lampPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+@keyframes o_lampBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+}
+
+@keyframes o_lampWobble {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.25) rotate(12deg); }
+}
+
+@keyframes o_hudShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+/* Everything is greyed out while a command is still on the wire */
+    html.t-cartoon body.ws-busy { cursor: progress; }
+    html.t-cartoon body.ws-busy .container button:not(.tablinks):not(#hud-retry),
+html.t-cartoon body.ws-busy .container input[type="button"],
+html.t-cartoon body.ws-busy .container input[type="submit"] { opacity: 0.5; }
+
+/* --- SPEECH BUBBLE TOASTS --- */
+    html.t-cartoon .toasts {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    max-width: 330px;
+}
+
+    html.t-cartoon .toast {
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 10px 14px;
+    border: var(--border-thick);
+    border-radius: 12px;
+    box-shadow: var(--shadow-hard);
+    background-color: var(--c-white);
+    animation: o_popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+    html.t-cartoon .toast.ok { background-color: var(--c-green); }
+    html.t-cartoon .toast.bad { background-color: var(--c-pink); }
+    html.t-cartoon .toast.info { background-color: var(--c-yellow); }
+    html.t-cartoon .toast.out { opacity: 0; transform: translateX(30px); }
+
+
+/* --- ORIGINAL SKIN: markup that arrived after this stylesheet did --- */
+html.t-cartoon .bleed,
+html.t-cartoon #blackout,
+html.t-cartoon #tear { display: none !important; }
+
+/* Same corner and same one-line treatment as the other skin, opposite
+   mood: bottom left of the box, under the last button. */
+html.t-cartoon #whisper {
+    display: block;
+    margin: 22px 0 0;
+    width: 100%;
+    min-height: 1.2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 0;
+    color: #E91E63;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+html.t-cartoon #whisper.on { opacity: 1; }
+
+html.t-cartoon .glitch::before,
+html.t-cartoon .glitch::after { content: none; }
+
+/* The masthead arrived with the other skin. It was never on this page,
+   so it does not show up here. */
+html.t-cartoon .masthead { display: none !important; }
+
+/* The loud button colours used to be inline; they live here now. */
+html.t-cartoon #btnLoad { background-color: var(--c-yellow) !important; width: 100%; }
+html.t-cartoon #show { background-color: var(--c-green) !important; width: 100%; }
+html.t-cartoon #download { background-color: #e0e0e0 !important; width: 100%; }
+html.t-cartoon .danger { background-color: var(--c-pink) !important; }
+html.t-cartoon #Config input[type="submit"]:not(.danger) { background-color: var(--c-cyan) !important; }
+html.t-cartoon #Upgrade input[type="button"] { background-color: var(--c-green) !important; }
+
+/* ============ SKIN: MODERN ============ */
+/* PicoHive's honey on the page's plain layout. No grey anywhere: neutrals
+   are warm, cards stand on shadow rather than outline, and state is shown
+   by honey, colour bars and dots. Light or dark follows the system. */
+html.t-clean {
+    color-scheme: light;
+    --bg: #FFFAF0;
+    --surface: #FFFFFF;
+    --band: #FFF5E0;
+    --field: #FFFDF8;
+    --hover: #FFEDC4;
+    --text: #2A1F0E;
+    --muted: #8C6A36;
+    --line: #F5E6C8;
+    --field-line: #EBD5A8;
+    --honey: #F2A516;
+    --honey-hover: #E39A0E;
+    --honey-deep: #B06A00;
+    --honey-soft: #FFEDC4;
+    --honey-ink: #2A1A00;
+    --danger: #C2362B;
+    --danger-soft: #FFEDE9;
+    --ok: #2F9E5B;
+    --toast-bg: #2A1F0E;
+    --toast-text: #FFF5E0;
+    --shadow: 0 1px 2px rgba(120,80,0,0.06), 0 4px 16px -6px rgba(120,80,0,0.14);
+    --card: 0 1px 2px rgba(120,80,0,0.05), 0 18px 48px -18px rgba(120,80,0,0.22);
+    --lift: 0 2px 4px rgba(60,40,0,0.12), 0 14px 36px rgba(60,40,0,0.22);
+    --ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --logo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2l12 7v14l-12 7-12-7V9z' fill='%23F2A516'/%3E%3Cpath d='M16 9l6 3.5v7L16 23l-6-3.5v-7z' fill='%232A1F0E'/%3E%3C/svg%3E");
+    --hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2l12 7v14l-12 7-12-7V9z' fill='%23F2A516'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+    html.t-clean {
+        color-scheme: dark;
+        --bg: #14100A;
+        --surface: #1E1810;
+        --band: #251D12;
+        --field: #191409;
+        --hover: #3A2C12;
+        --text: #FBF1DE;
+        --muted: #C9A46A;
+        --line: #33281A;
+        --field-line: #4A3A22;
+        --honey: #A3690C;
+        --honey-hover: #B57A14;
+        --honey-deep: #D9962A;
+        --honey-soft: #33260F;
+        --honey-ink: #FFF3DC;
+        --danger: #F07A6E;
+        --danger-soft: #34190F;
+        --ok: #5CCB8A;
+        --toast-bg: #3A2C12;
+        --toast-text: #FBF1DE;
+        --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 4px 16px -6px rgba(0,0,0,0.5);
+        --card: 0 1px 2px rgba(0,0,0,0.4), 0 18px 48px -18px rgba(0,0,0,0.7);
+        --lift: 0 2px 4px rgba(0,0,0,0.4), 0 14px 36px rgba(0,0,0,0.55);
+    }
+}
+
+html.t-clean { background: var(--bg); }
+
+/* The bottom padding keeps the last buttons clear of the messages that
+   stack up in the corner. */
+html.t-clean body {
+    margin: 0;
+    padding: 22px 20px 96px;
+    font-family: var(--ui);
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+html.t-clean a { color: var(--honey-deep); }
+
+/* Nothing from the other skins belongs here. */
+html.t-clean .bleed,
+html.t-clean #blackout,
+html.t-clean #tear,
+html.t-clean .sigil { display: none !important; }
+html.t-clean .glitch::before,
+html.t-clean .glitch::after { content: none; }
+
+/* One small line above the card: the logo, the name, the tagline. */
+html.t-clean .masthead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 780px;
+    margin: 0 auto 14px;
+    padding: 0 6px;
+    box-sizing: border-box;
+}
+html.t-clean .masthead::before {
+    content: "";
+    flex: none;
+    width: 18px;
+    height: 18px;
+    background: var(--logo) center / contain no-repeat;
+}
+html.t-clean .masthead h1 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    text-transform: none;
+    color: var(--text);
+    text-shadow: none;
+    animation: none;
+}
+html.t-clean .masthead .subtitle {
+    min-width: 0;
+    margin: 0;
+    padding-left: 10px;
+    border-left: 1px solid var(--field-line);
+    font-size: 0.8rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+html.t-clean .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--surface);
+    border: 0;
+    border-radius: 16px;
+    box-shadow: var(--card);
+    position: relative;
+}
+html.t-clean .container::before,
+html.t-clean .container::after { content: none; }
+
+/* --- Tabs: a honey tray; the open tab, main or section, is lifted onto
+   white with a faint honey ring --- */
+html.t-clean .tab {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 18px;
+    padding: 4px;
+    background: var(--band);
+    border: 0;
+    border-radius: 12px;
+}
+html.t-clean .tablinks {
+    flex: 1 1 0;
+    min-height: 0;
+    margin: 0;
+    padding: 9px 12px;
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
+    background: transparent;
+    border: 0;
+    border-radius: 9px;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+html.t-clean .tablinks::after { content: none; }
+html.t-clean .tablinks:hover,
+html.t-clean .tablinks:hover:not(.active) {
+    color: var(--text);
+    background: var(--hover);
+    box-shadow: none;
+}
+html.t-clean .tablinks:active { transform: none; }
+html.t-clean .tablinks.active,
+html.t-clean .tablinks.active:hover {
+    color: var(--text);
+    background: var(--surface);
+    box-shadow: var(--shadow), inset 0 0 0 1px color-mix(in srgb, var(--honey) 45%, transparent);
+}
+html.t-clean .tablinks.active::before { content: none; }
+
+/* --- Buttons: honey tints for everyday actions, solid honey for the one
+   that changes the device --- */
+html.t-clean button,
+html.t-clean input[type="button"],
+html.t-clean input[type="submit"] {
+    min-height: 36px;
+    margin: 0;
+    padding: 7px 14px;
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--honey-deep);
+    background: var(--honey-soft);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+html.t-clean button::after,
+html.t-clean input[type="button"]::after,
+html.t-clean input[type="submit"]::after { content: none; }
+html.t-clean button:hover,
+html.t-clean input[type="button"]:hover,
+html.t-clean input[type="submit"]:hover {
+    color: var(--honey-ink);
+    background: color-mix(in srgb, var(--honey) 35%, var(--honey-soft));
+    border-color: transparent;
+    letter-spacing: 0;
+    box-shadow: none;
+}
+@media (prefers-color-scheme: dark) {
+    html.t-clean button:hover,
+    html.t-clean input[type="button"]:hover,
+    html.t-clean input[type="submit"]:hover { color: var(--text); }
+}
+html.t-clean button:active,
+html.t-clean input[type="button"]:active,
+html.t-clean input[type="submit"]:active { transform: translateY(1px); }
+html.t-clean button:focus-visible,
+html.t-clean input:focus-visible,
+html.t-clean select:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+html.t-clean #Config input[type="submit"]:not(.danger),
+html.t-clean #Upgrade input[type="button"] {
+    color: var(--honey-ink);
+    background: var(--honey);
+    box-shadow: 0 1px 2px rgba(120,80,0,0.2), 0 4px 12px -4px color-mix(in srgb, var(--honey) 70%, transparent);
+}
+html.t-clean #Config input[type="submit"]:not(.danger):hover,
+html.t-clean #Upgrade input[type="button"]:hover {
+    color: var(--honey-ink);
+    background: var(--honey-hover);
+}
+
+html.t-clean .danger {
+    color: var(--danger) !important;
+    background: var(--danger-soft) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+html.t-clean .danger:hover {
+    color: #FFFFFF !important;
+    background: var(--danger) !important;
+}
+
+/* Save, restart and erase sit in one footer row: the destructive pair to
+   the left, save on its own at the right. */
+html.t-clean #Config > div[style*="text-align"] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+html.t-clean #Config > div[style*="text-align"] br { display: none; }
+html.t-clean #Config > div[style*="text-align"] input:not(.danger) {
+    order: 2;
+    width: auto !important;
+    margin-left: auto;
+    padding: 8px 22px;
+}
+
+/* --- Fields --- */
+html.t-clean label {
+    margin: 0;
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text);
+}
+html.t-clean input[type="text"],
+html.t-clean textarea,
+html.t-clean select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 36px;
+    margin: 0;
+    padding: 7px 10px;
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    letter-spacing: 0;
+    color: var(--text);
+    background: var(--field);
+    border: 1px solid var(--field-line);
+    border-radius: 8px;
+    box-shadow: none;
+    caret-color: var(--honey-deep);
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+html.t-clean input[type="text"]:hover,
+html.t-clean textarea:hover,
+html.t-clean select:hover { border-color: color-mix(in srgb, var(--honey) 55%, var(--field-line)); }
+html.t-clean input[type="text"]:focus,
+html.t-clean textarea:focus,
+html.t-clean select:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--honey);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--honey) 25%, transparent);
+}
+html.t-clean input[type="text"]::placeholder,
+html.t-clean textarea::placeholder { color: var(--muted); opacity: 0.65; }
+html.t-clean textarea { display: block; resize: vertical; line-height: 1.45; }
+html.t-clean select option { background: var(--surface); color: var(--text); }
+html.t-clean .secret-row { gap: 8px; }
+html.t-clean .secret-row input[type="text"],
+html.t-clean .secret-row input[type="button"] { margin: 0; }
+
+html.t-clean input[type="checkbox"] {
+    appearance: auto;
+    -webkit-appearance: auto;
+    accent-color: var(--honey);
+    width: 16px;
+    height: 16px;
+    margin: 0 8px 0 0;
+    vertical-align: -3px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+html.t-clean input[type="checkbox"]::after { content: none; }
+html.t-clean label + input[type="checkbox"] { margin-left: 20px; }
+
+html.t-clean input[type="file"] {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    color: var(--muted);
+    background: var(--band);
+    border: 2px dashed color-mix(in srgb, var(--honey) 45%, transparent);
+    border-radius: 10px;
+    cursor: pointer;
+}
+html.t-clean input[type="file"]::file-selector-button {
+    margin-right: 14px;
+    padding: 7px 14px;
+    font: 600 0.875rem var(--ui);
+    color: var(--honey-ink);
+    background: var(--honey);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+html.t-clean input[type="file"]::file-selector-button:hover { background: var(--honey-hover); }
+
+/* --- Cards: shadow instead of outline, a honey band with a hexagon for
+   the title, warm hairlines between rows --- */
+html.t-clean table {
+    width: 100%;
+    margin: 0 0 18px;
+    padding: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--surface);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+html.t-clean th {
+    padding: 12px 18px 12px 38px;
+    text-align: left;
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    font-weight: 650;
+    letter-spacing: -0.005em;
+    text-transform: none;
+    color: var(--text);
+    background: var(--band) var(--hex) 18px 50% / 11px 12px no-repeat;
+    border: 0;
+}
+html.t-clean table:not(.cal-schedule) td { padding: 11px 18px; vertical-align: middle; }
+html.t-clean table:not(.cal-schedule) tr + tr td { border-top: 1px solid var(--line); }
+html.t-clean table:not(.cal-schedule) td:first-child { padding-right: 8px; }
+html.t-clean table.cal-schedule th { padding: 10px 18px; background: var(--band); }
+html.t-clean table.cal-schedule th:first-child { padding-left: 38px; background: var(--band) var(--hex) 18px 50% / 11px 12px no-repeat; }
+html.t-clean table.cal-schedule td { padding: 10px 18px; border-bottom-color: var(--line); }
+html.t-clean .hint { color: var(--muted); opacity: 1; }
+html.t-clean td.hint, html.t-clean td > .hint { font-size: 0.8125rem; }
+
+html.t-clean .control-panel {
+    margin: 0 0 18px;
+    padding: 28px;
+    background: var(--surface);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+html.t-clean .control-panel p { margin: 0 0 18px; color: var(--muted); }
+html.t-clean #Upgrade .control-panel input[type="button"] { padding: 8px 22px; }
+
+/* Pages with a work tab of their own (the e-paper Display tab): fields
+   stacked under their labels, the step that changes the device in solid
+   honey, the rest tinted. */
+html.t-clean .control-panel label:not([for]),
+html.t-clean .control-panel label[for="imageslot"] { display: block; margin: 0 0 6px; font-weight: 600; }
+html.t-clean .control-panel input[type="checkbox"] + label { margin-right: 18px; }
+html.t-clean #Display .control-panel input[type="file"],
+html.t-clean #Display .control-panel select { margin-bottom: 12px; }
+html.t-clean #Display .control-panel #imageslot { width: auto; margin: 0 10px 0 0; }
+html.t-clean #Display .control-panel br { display: none; }
+html.t-clean #btnLoad,
+html.t-clean #show,
+html.t-clean #download { display: block; width: 100%; margin-top: 12px; }
+html.t-clean #show {
+    color: var(--honey-ink);
+    background: var(--honey);
+    box-shadow: 0 1px 2px rgba(120,80,0,0.2), 0 4px 12px -4px color-mix(in srgb, var(--honey) 70%, transparent);
+}
+html.t-clean #show:hover { color: var(--honey-ink); background: var(--honey-hover); }
+
+/* Until a picture is drawn the canvas is empty: show the card's own tint
+   rather than a white sheet. */
+html.t-clean #canvas {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto 12px;
+    background: var(--band);
+    border: 0;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    animation: none;
+}
+html.t-clean .coords-box {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 4px 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0;
+    color: var(--muted);
+    background: var(--band);
+    border: 0;
+    border-radius: 999px;
+}
+
+html.t-clean .tabcontent { display: none; animation: none; }
+
+/* --- The line at the bottom: Original's friendly lines, quietly, under
+   a honey hexagon --- */
+html.t-clean #whisper {
+    display: block;
+    margin: 22px 0 0;
+    padding-left: 18px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 1.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--ui);
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: var(--hex) 0 50% / 9px 10px no-repeat;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+html.t-clean #whisper.on { opacity: 1; }
+
+/* --- Status: a colour bar down the left edge and a dot carry the state --- */
+html.t-clean .hud {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 22px;
+    margin: 0 0 18px;
+    padding: 7px 8px 7px 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--surface);
+    border: 0;
+    border-radius: 10px;
+    box-shadow: var(--shadow), inset 3px 0 0 var(--hud, var(--honey));
+}
+html.t-clean .hud-lamp {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--hud, var(--honey));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hud, var(--honey)) 22%, transparent);
+    animation: none;
+}
+html.t-clean .hud-state {
+    flex: 0 0 auto;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--hud-text, var(--text));
+}
+html.t-clean .hud-detail {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: var(--ui);
+    font-size: 0.8125rem;
+    letter-spacing: 0;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+html.t-clean .hud-bar {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: var(--honey);
+    box-shadow: none;
+    transition: width 0.1s linear;
+}
+html.t-clean #hud-retry {
+    display: none;
+    flex: 0 0 auto;
+    min-height: 0;
+    padding: 4px 12px;
+    font-size: 0.8125rem;
+}
+html.t-clean .hud-connecting .hud-lamp,
+html.t-clean .hud-busy .hud-lamp { animation: cleanPulse 1.4s ease-in-out infinite; }
+html.t-clean .hud-online,
+html.t-clean .hud-ok { --hud: var(--ok); }
+html.t-clean .hud-busy .hud-bar { display: block; }
+html.t-clean .hud-fail,
+html.t-clean .hud-offline { --hud: var(--danger); --hud-text: var(--danger); background: var(--danger-soft); animation: none; }
+html.t-clean .hud-fail #hud-retry,
+html.t-clean .hud-offline #hud-retry { display: inline-block; }
+
+@keyframes cleanPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+html.t-clean body.ws-busy { cursor: progress; }
+html.t-clean body.ws-busy .container button:not(.tablinks):not(#hud-retry),
+html.t-clean body.ws-busy .container input[type="button"],
+html.t-clean body.ws-busy .container input[type="submit"] { opacity: 0.5; }
+
+/* --- Toasts: dark honey slips in the corner, a dot for the outcome --- */
+html.t-clean .toasts {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    max-width: 360px;
+}
+html.t-clean .toast {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 11px 16px;
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    letter-spacing: 0;
+    color: var(--toast-text);
+    background: var(--toast-bg);
+    border: 0;
+    border-radius: 10px;
+    box-shadow: var(--lift);
+    animation: none;
+    transition: opacity .25s ease, transform .25s ease;
+}
+html.t-clean .toast::before {
+    content: "";
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--honey);
+    transform: translateY(-1px);
+}
+html.t-clean .toast.ok::before { background: var(--ok); }
+html.t-clean .toast.bad { color: var(--toast-text); background: var(--toast-bg); }
+html.t-clean .toast.bad::before { background: var(--danger); }
+html.t-clean .toast.out { opacity: 0; transform: translateY(8px); }
+/* ============ SKIN: FALLOUT ============ */
+
+/* --- A monitor bolted to a concrete wall in a room nobody has been back
+   to. The wall is the page, the screen is the card, and the controls are
+   pieces of the wall with phosphor lettering burned onto them.
+
+   This skin does not move on its own: no drift, no flicker, no roll, no
+   falling masonry. Everything that happens here happens because a pointer
+   is on top of it. --- */
+    html.t-fallout {
+    --scr:       #0A120C;   /* the glass with nothing on it */
+    --scr-2:     #060B07;
+    --ph:        #43F58B;   /* phosphor */
+    --ph-hi:     #B6FFD8;
+    --ph-mid:    #2BA862;
+    --ph-dim:    #1B6E40;
+    --amber:     #FFB642;   /* the colour it uses to worry you */
+    --alarm:     #FF6B4A;
+    --wall:      #1B1815;   /* exposed concrete */
+    --wall-hi:   #2A251F;
+    --grit:      #6B6252;
+    --dust:      #9C917C;
+    --bone:      #C9BCA2;
+    --rust:      #8C4520;
+    --rust-hot:  #C86A28;
+    --term:      'Share Tech Mono', 'Consolas', 'DejaVu Sans Mono', 'Liberation Mono', 'Courier New', monospace;
+    --hand:      'Chalkduster', 'Segoe Print', 'Ink Free', 'Bradley Hand', 'Comic Sans MS', cursive;
+}
+
+    html.t-fallout ::selection { background: var(--ph); color: #04140A; }
+
+/* No text above the screen. The row of buttons across the top of it is the
+   only heading this skin gets. */
+    html.t-fallout .masthead { display: none !important; }
+    html.t-fallout .glitch::before,
+html.t-fallout .glitch::after { content: none; }
+
+/* Nothing on this skin comes down off the ceiling. */
+    html.t-fallout .bleed,
+html.t-fallout #tear,
+html.t-fallout #blackout { display: none !important; }
+
+/* --- THE ROOM --- */
+    html.t-fallout { background: #0D0B09; }
+
+    html.t-fallout body {
+    font-family: var(--term);
+    color: var(--bone);
+    margin: 0;
+    padding: 40px 24px 96px;
+    min-height: 100vh;
+    background-color: var(--wall);
+    background-image:
+        /* what the screen throws back onto the wall */
+        radial-gradient(76vw 58vh at 50% 32%, rgba(67,245,139,0.10), transparent 62%),
+        /* something burning a long way below the horizon */
+        radial-gradient(120vw 46vh at 50% 124%, rgba(200,106,40,0.16), transparent 64%),
+        /* damp coming through the pour */
+        radial-gradient(40vw 32vh at  8% 22%, rgba(107,98,82,0.20), transparent 70%),
+        radial-gradient(34vw 30vh at 88% 62%, rgba(8,7,5,0.6),      transparent 72%),
+        /* aggregate, where the face of the wall has come off */
+        radial-gradient(circle at 14% 31%, rgba(107,98,82,0.22) 0 3px,   transparent 4px),
+        radial-gradient(circle at 82% 19%, rgba(107,98,82,0.18) 0 2px,   transparent 3px),
+        radial-gradient(circle at 67% 77%, rgba(107,98,82,0.16) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 26% 88%, rgba(8,7,5,0.34)     0 2px,   transparent 3px),
+        linear-gradient(174deg, var(--wall-hi) 0%, var(--wall) 44%, #100E0B 100%);
+    background-attachment: fixed;
+}
+
+/* Grain in the air, dust hanging in it, and a room that gets darker the
+   further it gets from the screen. None of it is going anywhere. */
+    html.t-fallout body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(112deg, rgba(201,188,162,0.020) 0 2px, transparent 2px 7px),
+        radial-gradient(132vw 98vh at 50% 40%, transparent 40%, rgba(6,5,4,0.8) 100%);
+}
+
+    html.t-fallout body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image:
+        radial-gradient(circle at 20% 10%, rgba(201,188,162,0.44) 0 1px,   transparent 1.6px),
+        radial-gradient(circle at 68% 34%, rgba(201,188,162,0.30) 0 1px,   transparent 1.6px),
+        radial-gradient(circle at 44% 72%, rgba(201,188,162,0.22) 0 1.2px, transparent 1.9px),
+        radial-gradient(circle at 87% 58%, rgba(67,245,139,0.14)  0 1px,   transparent 1.6px);
+    background-size: 240px 240px, 310px 310px, 190px 190px, 420px 420px;
+}
+
+/* --- THE SCREEN --- */
+/* Curved glass in a rusted bezel, sunk into the wall. */
+    html.t-fallout .container {
+    max-width: 880px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    padding: 30px 34px 34px;
+    color: var(--ph);
+    text-shadow: 0 0 5px rgba(67,245,139,0.5);
+    background-color: var(--scr);
+    background-image:
+        radial-gradient(120% 92% at 50% 40%, rgba(67,245,139,0.09), transparent 62%),
+        linear-gradient(178deg, #0C160F 0%, var(--scr) 46%, var(--scr-2) 100%);
+    border: 0;
+    border-radius: 26px / 40px;
+    box-shadow:
+        /* the glass */
+        inset 0 0 130px 26px rgba(0,0,0,0.9),
+        inset 0 0 44px rgba(67,245,139,0.10),
+        /* the bezel, and the rust along it */
+        0 0 0 11px #211D18,
+        0 0 0 12px rgba(140,69,32,0.6),
+        0 0 0 19px #17150F,
+        0 0 0 20px rgba(8,7,5,0.9),
+        /* what it does to the wall around it */
+        0 34px 90px -24px rgba(0,0,0,0.95),
+        0 0 100px -12px rgba(67,245,139,0.22);
+}
+
+/* The bulge of the glass, and nothing else. No scanlines, no grille, no
+   scratches: the tube reads as one solid surface. */
+    html.t-fallout .container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(122% 100% at 50% 46%, transparent 50%, rgba(0,0,0,0.72) 100%);
+}
+
+/* The glare of whatever is still lit behind you, sitting on the glass. */
+    html.t-fallout .container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(163deg,
+        rgba(182,255,216,0.055) 0,
+        rgba(182,255,216,0.02) 16%,
+        transparent 38%);
+}
+
+/* --- THE CONTROLS --- */
+/* Every control is a piece of the wall. At rest it is masonry with the
+   lettering burned into it; under the pointer it splits, and the phosphor
+   comes up through the break. The crack is four background layers parked
+   off the edge until they are wanted, so it works on <input> too, which
+   cannot carry a pseudo-element. */
+    html.t-fallout button,
+html.t-fallout input[type="button"],
+html.t-fallout input[type="submit"],
+html.t-fallout .tablinks {
+    font-family: var(--term);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 13px 18px;
+    margin: 7px 0;
+    color: var(--ph);
+    border: 1px solid rgba(67,245,139,0.22);
+    border-radius: 2px 9px 2px 8px / 8px 2px 10px 3px;
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 0 7px rgba(67,245,139,0.55), 0 1px 0 rgba(0,0,0,0.9);
+    background-color: #12160F;
+    background-image:
+        /* the break: one run with two splinters off it, parked well off
+           the left edge in real pixels -- a percentage offset would be a
+           no-op at this layer size. The three start from different
+           distances, so they arrive one after another rather than
+           together, and none of them is parallel to another. */
+        linear-gradient(72deg, transparent 47.4%, rgba(4,20,10,0.9) 47.4% 47.75%, rgba(182,255,216,0.8) 47.75% 48.0%, transparent 48.0%),
+        linear-gradient(51deg, transparent 58.2%, rgba(4,20,10,0.7) 58.2% 58.45%, rgba(67,245,139,0.55) 58.45% 58.65%, transparent 58.65%),
+        linear-gradient(97deg, transparent 39.6%, rgba(4,20,10,0.6) 39.6% 39.8%,  rgba(67,245,139,0.4)  39.8% 39.95%, transparent 39.95%),
+        /* aggregate, two tiles that never quite line up */
+        radial-gradient(circle at 30% 38%, rgba(124,133,110,0.26) 0 2px,   transparent 3px),
+        radial-gradient(circle at 66% 71%, rgba(124,133,110,0.18) 0 1.5px, transparent 2.6px),
+        /* head joints and bed joints */
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.30) 0 2px, transparent 2px 61px),
+        repeating-linear-gradient(0deg,  rgba(0,0,0,0.24) 0 1px, transparent 1px 17px),
+        /* the pour */
+        linear-gradient(166deg, #1F251B 0%, #151A13 52%, #0B0F09 100%);
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, repeat, no-repeat;
+    background-size:   100% 100%, 100% 100%, 100% 100%, 37px 37px, 53px 53px, auto, auto, auto;
+    background-position: -1150px 0, -1500px 0, -1850px 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    transition: color .12s steps(2, end),
+                border-color .3s ease,
+                box-shadow .3s ease,
+                background-position .42s cubic-bezier(.3,.85,.3,1);
+}
+
+/* Real buttons get the selector caret. An <input> cannot carry one, so it
+   makes do with the break, which is the part that reads. */
+    html.t-fallout button { padding-left: 32px; }
+    html.t-fallout button::before {
+    content: ">";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    z-index: 1;
+    transition: opacity .1s steps(1, end);
+}
+    html.t-fallout button:hover::before { opacity: 1; }
+
+/* The cracks arrive; the masonry settles a couple of pixels behind them. */
+    html.t-fallout button:hover,
+html.t-fallout input[type="button"]:hover,
+html.t-fallout input[type="submit"]:hover,
+html.t-fallout .tablinks:hover {
+    color: var(--ph-hi);
+    border-color: rgba(67,245,139,0.6);
+    background-position: 0 0, 0 0, 0 0, 3px 2px, -2px 3px, -2px 0, 0 1px, 0 0;
+    box-shadow: inset 0 0 34px rgba(67,245,139,0.22),
+                0 0 26px -6px rgba(67,245,139,0.55);
+    text-shadow: 0 0 10px rgba(182,255,216,0.8), 0 1px 0 rgba(0,0,0,0.9);
+}
+
+/* Pressed, it gives way completely. */
+    html.t-fallout button:active,
+html.t-fallout input[type="button"]:active,
+html.t-fallout input[type="submit"]:active {
+    color: #04140A;
+    border-color: var(--ph-hi);
+    background-color: var(--ph);
+    background-position: 0 0, 0 0, 0 0, 6px 5px, -5px 6px, -5px 0, 0 3px, 0 0;
+    box-shadow: inset 0 0 60px rgba(182,255,216,0.9),
+                0 0 40px -4px rgba(182,255,216,0.8);
+    text-shadow: none;
+}
+
+    html.t-fallout #btnLoad,
+html.t-fallout #show,
+html.t-fallout #download { width: 100%; }
+    html.t-fallout #show { border-color: rgba(67,245,139,0.5); }
+    html.t-fallout #download { color: var(--ph-mid); }
+
+    html.t-fallout #upload,
+html.t-fallout #load { color: var(--amber); border-color: rgba(255,182,66,0.3); text-shadow: 0 0 7px rgba(255,182,66,0.5), 0 1px 0 rgba(0,0,0,0.9); }
+    html.t-fallout #upload:hover,
+html.t-fallout #load:hover {
+    color: #FFE3AE;
+    border-color: rgba(255,182,66,0.7);
+    box-shadow: inset 0 0 34px rgba(255,182,66,0.22), 0 0 26px -6px rgba(255,182,66,0.55);
+    text-shadow: 0 0 10px rgba(255,182,66,0.8), 0 1px 0 rgba(0,0,0,0.9);
+}
+    html.t-fallout #upload:active,
+html.t-fallout #load:active { background-color: var(--amber); color: #1A1004; box-shadow: inset 0 0 60px rgba(255,227,174,0.9), 0 0 40px -4px rgba(255,182,66,0.8); }
+
+    html.t-fallout .danger { color: var(--alarm) !important; border-color: rgba(255,107,74,0.35) !important; text-shadow: 0 0 7px rgba(255,107,74,0.5), 0 1px 0 rgba(0,0,0,0.9) !important; }
+    html.t-fallout .danger:hover {
+    color: #FFC9BC !important;
+    border-color: rgba(255,107,74,0.75) !important;
+    box-shadow: inset 0 0 34px rgba(255,107,74,0.24), 0 0 26px -6px rgba(255,107,74,0.6) !important;
+}
+    html.t-fallout .danger:active { background-color: var(--alarm) !important; color: #1A0703 !important; box-shadow: inset 0 0 60px rgba(255,201,188,0.9), 0 0 40px -4px rgba(255,107,74,0.85) !important; }
+
+/* --- THE TOP BAR --- */
+    html.t-fallout .tab {
+    display: flex;
+    gap: 6px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(67,245,139,0.28);
+    box-shadow: 0 1px 14px -4px rgba(67,245,139,0.4);
+    padding: 0 0 12px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+}
+    html.t-fallout .tablinks {
+    flex: 1 1 0;
+    margin: 0;
+    padding-left: 32px;
+    color: var(--ph-mid);
+}
+    html.t-fallout .tablinks::before {
+    content: ">";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    z-index: 1;
+    transition: opacity .1s steps(1, end);
+}
+    html.t-fallout .tablinks:hover::before { opacity: 1; }
+
+/* The one you are on is not masonry any more. It is just lit. */
+    html.t-fallout .tablinks.active {
+    color: #04140A;
+    background-color: var(--ph);
+    background-image: none;
+    border-color: var(--ph);
+    text-shadow: none;
+    box-shadow: 0 0 30px -6px rgba(67,245,139,0.75);
+}
+    html.t-fallout .tablinks.active::before { opacity: 1; color: #04140A; }
+    html.t-fallout .tablinks.active:hover {
+    color: #04140A;
+    background-color: var(--ph-hi);
+    border-color: var(--ph-hi);
+    text-shadow: none;
+    box-shadow: 0 0 36px -4px rgba(182,255,216,0.85);
+}
+
+/* --- FIELDS --- */
+    html.t-fallout input[type="text"],
+html.t-fallout select,
+html.t-fallout input[type="file"] {
+    font-family: var(--term);
+    font-size: 0.84rem;
+    color: var(--ph-hi);
+    background-color: rgba(4,20,10,0.55);
+    border: 1px solid rgba(67,245,139,0.22);
+    border-radius: 2px 6px 2px 5px;
+    padding: 9px 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    letter-spacing: 0.08em;
+    caret-color: var(--ph);
+    text-shadow: 0 0 6px rgba(67,245,139,0.4);
+    box-shadow: inset 0 0 16px rgba(67,245,139,0.06);
+    transition: border-color .3s ease, box-shadow .3s ease, background-color .3s ease;
+}
+
+    html.t-fallout input[type="text"]:focus,
+html.t-fallout select:focus,
+html.t-fallout input[type="file"]:focus {
+    outline: none;
+    background-color: rgba(67,245,139,0.1);
+    border-color: var(--ph);
+    box-shadow: inset 0 0 20px rgba(67,245,139,0.14), 0 0 26px -6px rgba(67,245,139,0.65);
+}
+
+    html.t-fallout input[type="text"]::placeholder { color: rgba(43,168,98,0.6); }
+    html.t-fallout select option { background: #071309; color: var(--ph-hi); }
+
+    html.t-fallout input[type="file"] { color: var(--ph-mid); cursor: pointer; }
+    html.t-fallout input[type="file"]::file-selector-button {
+    font-family: var(--term);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ph);
+    background: transparent;
+    border: 1px solid rgba(67,245,139,0.28);
+    border-radius: 2px 6px 2px 5px;
+    padding: 7px 15px;
+    margin-right: 14px;
+    cursor: pointer;
+    transition: background-color .12s steps(2, end), color .12s steps(2, end);
+}
+    html.t-fallout input[type="file"]::file-selector-button:hover { background: var(--ph); color: #04140A; }
+
+/* Set is a filled cell, the way this terminal draws every other yes. */
+    html.t-fallout input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(67,245,139,0.45);
+    border-radius: 1px;
+    background: rgba(4,20,10,0.6);
+    vertical-align: -3px;
+    margin: 0 10px 0 0;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .3s ease, box-shadow .3s ease;
+}
+    html.t-fallout input[type="checkbox"]:checked { border-color: var(--ph); box-shadow: 0 0 16px -2px rgba(67,245,139,0.7); }
+    html.t-fallout input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background: var(--ph);
+}
+
+    html.t-fallout label + input[type="checkbox"] { margin-left: 30px; }
+
+    html.t-fallout label {
+    font-family: var(--term);
+    font-size: 0.74rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ph-mid);
+    text-shadow: 0 0 5px rgba(67,245,139,0.35);
+}
+
+/* --- THE PICTURE --- */
+    html.t-fallout #canvas {
+    border: 1px solid rgba(67,245,139,0.4);
+    border-radius: 2px;
+    background-color: #04140A;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto 20px;
+    box-shadow:
+        0 0 0 5px rgba(4,20,10,0.9),
+        0 0 0 6px rgba(67,245,139,0.22),
+        0 0 46px -10px rgba(67,245,139,0.4);
+}
+
+/* --- BLOCKS --- */
+    html.t-fallout .control-panel,
+html.t-fallout table {
+    background-color: rgba(67,245,139,0.035);
+    border: 1px solid rgba(67,245,139,0.16);
+    border-left: 2px solid rgba(67,245,139,0.45);
+    border-radius: 2px 10px 2px 9px / 9px 2px 11px 3px;
+    box-shadow: inset 0 0 24px rgba(67,245,139,0.05);
+    margin-bottom: 18px;
+}
+    html.t-fallout .control-panel { padding: 22px; }
+    html.t-fallout table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 9px;
+    padding: 18px;
+}
+
+    html.t-fallout th {
+    font-family: var(--term);
+    text-align: left;
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ph-hi);
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(67,245,139,0.22);
+    text-shadow: 0 0 8px rgba(67,245,139,0.55);
+}
+
+    html.t-fallout td { vertical-align: middle; }
+
+    html.t-fallout .coords-box {
+    font-family: var(--term);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--ph-mid);
+    background: rgba(4,20,10,0.5);
+    border: 1px solid rgba(67,245,139,0.18);
+    border-radius: 2px 6px 2px 5px;
+    padding: 6px 15px;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+    html.t-fallout .tabcontent { display: none; }
+
+/* --- THE STATUS LINE --- */
+    html.t-fallout .hud {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    background: rgba(4,20,10,0.5);
+    border: 1px solid rgba(67,245,139,0.18);
+    border-radius: 2px 9px 2px 8px / 8px 2px 10px 3px;
+    padding: 9px 15px;
+    min-height: 24px;
+    margin-bottom: 18px;
+    white-space: nowrap;
+    transition: border-color .5s ease;
+}
+
+    html.t-fallout .hud-lamp {
+    flex: 0 0 9px;
+    width: 9px;
+    height: 9px;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--ph-dim);
+    box-sizing: border-box;
+}
+
+    html.t-fallout .hud-state {
+    flex: 0 0 auto;
+    font-family: var(--term);
+    font-size: 0.74rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ph);
+}
+
+    html.t-fallout .hud-detail {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: var(--term);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--ph-mid);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    html.t-fallout .hud-bar {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background: var(--ph);
+    box-shadow: 0 0 12px rgba(67,245,139,0.8);
+    transition: width 0.1s linear;
+}
+
+    html.t-fallout #hud-retry {
+    display: none;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 6px 13px 6px 26px;
+    font-size: 0.68rem;
+}
+    html.t-fallout #hud-retry::before { left: 10px; }
+
+/* Status. The lamp states are colour and glow only; none of them blink. */
+    html.t-fallout .hud-connecting .hud-state { color: var(--amber); text-shadow: 0 0 7px rgba(255,182,66,0.5); }
+    html.t-fallout .hud-connecting .hud-lamp  { background-color: var(--amber); box-shadow: 0 0 12px rgba(255,182,66,0.8); }
+
+    html.t-fallout .hud-online .hud-state { color: var(--ph); }
+    html.t-fallout .hud-online .hud-lamp  { background-color: var(--ph); box-shadow: 0 0 14px rgba(67,245,139,0.9); }
+
+    html.t-fallout .hud-busy .hud-state { color: var(--ph-hi); }
+    html.t-fallout .hud-busy .hud-lamp  { background-color: var(--ph-hi); box-shadow: 0 0 16px rgba(182,255,216,0.95); }
+    html.t-fallout .hud-busy .hud-bar   { display: block; }
+
+    html.t-fallout .hud-ok .hud-state { color: var(--ph); }
+    html.t-fallout .hud-ok .hud-lamp  { background-color: var(--ph); box-shadow: 0 0 14px rgba(67,245,139,0.9); }
+
+    html.t-fallout .hud-fail { border-color: rgba(255,107,74,0.5); }
+    html.t-fallout .hud-fail .hud-state { color: var(--alarm); text-shadow: 0 0 7px rgba(255,107,74,0.5); }
+    html.t-fallout .hud-fail .hud-lamp  { background-color: var(--alarm); box-shadow: 0 0 14px rgba(255,107,74,0.9); }
+    html.t-fallout .hud-fail #hud-retry { display: inline-block; }
+
+    html.t-fallout .hud-offline { border-color: rgba(255,107,74,0.35); }
+    html.t-fallout .hud-offline .hud-state { color: var(--alarm); text-shadow: 0 0 7px rgba(255,107,74,0.5); }
+    html.t-fallout .hud-offline .hud-lamp  { background-color: var(--alarm); box-shadow: 0 0 14px rgba(255,107,74,0.9); }
+    html.t-fallout .hud-offline #hud-retry { display: inline-block; }
+
+    html.t-fallout body.ws-busy { cursor: progress; }
+    html.t-fallout body.ws-busy .container button:not(.tablinks):not(#hud-retry),
+html.t-fallout body.ws-busy .container input[type="button"],
+html.t-fallout body.ws-busy .container input[type="submit"] { opacity: 0.4; }
+
+/* --- NOTES ON THE WALL --- */
+/* The toasts are the only things here that are not on the screen, so they
+   are the only things still written by hand. */
+    html.t-fallout .toasts {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    max-width: 350px;
+}
+
+    html.t-fallout .toast {
+    font-family: var(--hand);
+    font-size: 0.88rem;
+    letter-spacing: 0.01em;
+    padding: 12px 17px;
+    color: var(--bone);
+    background: #262119;
+    background-image: linear-gradient(168deg, rgba(201,188,162,0.08), transparent 62%);
+    border: 1px solid rgba(0,0,0,0.6);
+    border-left: 3px solid var(--grit);
+    border-radius: 2px 11px 3px 10px / 11px 3px 12px 4px;
+    transform: rotate(-0.6deg);
+    box-shadow: 0 18px 44px -26px rgba(0,0,0,0.95);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+    html.t-fallout .toast.ok   { border-left-color: var(--ph); }
+    html.t-fallout .toast.bad  { border-left-color: var(--alarm); color: #E8B0A2; }
+    html.t-fallout .toast.info { border-left-color: var(--rust-hot); }
+    html.t-fallout .toast.out  { opacity: 0; transform: translateX(26px) rotate(-2.5deg); }
+
+/* --- THE LINE AT THE BOTTOM --- */
+/* Always up. The only motion on this skin is the short dip it takes while
+   one line is swapped for the next. */
+    html.t-fallout #whisper {
+    display: block;
+    margin: 24px 0 0;
+    width: 100%;
+    min-height: 1.2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    font-family: var(--term);
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
+    color: var(--ph-mid);
+    text-shadow: 0 0 6px rgba(67,245,139,0.35);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+    html.t-fallout #whisper::before { content: "> "; color: var(--ph-dim); }
+    html.t-fallout #whisper.on { opacity: 1; }
+
+/* The chat picker's one line of explanation. No skin of its own: it takes
+   the colour of whatever text is around it and only steps back a little. */
+.hint { font-size: 0.78rem; opacity: 0.7; margin: -4px 0 10px; }
+/* Config's sections are a second row inside the same tray as the main tabs:
+   each skin's own tab look, a size down, packed close under the first row,
+   and wrapping to two rows on a phone. */
+html .tab.nav-tray { flex-direction: column; gap: 6px; }
+html .tab.nav-tray > .tab-row { display: flex; gap: inherit; }
+html.t-clean .tab.nav-tray > .tab-row,
+html.t-fallout .tab.nav-tray > .tab-row { column-gap: 4px; }
+/* Cartoon buttons bring their own side margins. */
+html.t-cartoon .tab.nav-tray > .tab-row { column-gap: 0; }
+/* ...and wide padding, which the long tab names alone overflow on a phone. */
+@media (max-width: 480px) {
+    html.t-cartoon .tab.nav-tray .tablinks { padding-left: 8px; padding-right: 8px; }
+}
+html .tab.nav-tray > .tab-row.subtabs { flex-wrap: wrap; row-gap: 6px; margin-top: 3px; }
+html .tab.nav-tray > .tab-row.subtabs .tablinks {
+    flex: 1 1 0;
+    min-width: 110px;
+    font-size: 0.78rem;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+/* A secret and its Forget button share a row; the button keeps its natural
+   width so the field takes the rest, and drops below it when there is not
+   enough. "html" so it outranks each skin's own field and button rules,
+   which come earlier. */
+html .secret-row { display: flex; flex-wrap: wrap; gap: 0 8px; align-items: stretch; }
+html .secret-row input[type="text"] { flex: 1 1 160px; min-width: 0; }
+html .secret-row input[type="button"] { flex: none; width: auto; margin: 0 0 10px; }
+/* The line under the config string: valid or not, and why. */
+.cfg-status { font-size: 0.9em; margin-top: 2px; white-space: pre-line; word-break: break-word; }
+.cfg-status:empty { display: none; }
+html.t-xeno .cfg-status.ok { color: var(--viridian); }
+html.t-xeno .cfg-status.bad { color: var(--blood); }
+html.t-cartoon .cfg-status.ok { color: #1B7F3A; }
+html.t-cartoon .cfg-status.bad { color: #C62828; }
+html.t-clean .cfg-status.ok { color: var(--ok); }
+html.t-clean .cfg-status.bad { color: var(--danger); }
+html.t-fallout .cfg-status.ok { color: var(--ph); }
+html.t-fallout .cfg-status.bad { color: var(--alarm); }

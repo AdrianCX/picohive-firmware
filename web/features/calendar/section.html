@@ -1,0 +1,71 @@
+<table>
+  <th colspan="2" data-t="cfg.cal">The almanac</th>
+  <tr>
+    <td style="width: 130px;"><label for="calendar_url" data-t="cfg.calUrl">Almanac:</label></td>
+    <td><div class="secret-row"><input type="text" id="calendar_url" data-config="calendar.secret_url" name="calendar_url" value="" placeholder="https://calendar.google.com/calendar/ical/.../basic.ics" data-hint="https://calendar.google.com/calendar/ical/.../basic.ics" autocomplete="off" spellcheck="false"><input type="button" id="calendar_url_forget" data-t="cfg.forget" value="Forget" onclick="forgetSecret('calendar_url')" style="display:none"></div></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label for="calendar_id" data-t="cfg.calId">True name:</label></td>
+    <td><input type="text" id="calendar_id" data-config="calendar.id" data-trim name="calendar_id" value="" placeholder="{{id_example}}" maxlength="31" autocomplete="off" spellcheck="false"></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label for="calendar_allowed" data-t="cfg.calAllowed">Permitted rites:</label></td>
+    <td><input type="text" id="calendar_allowed" data-config="calendar.allowed" data-trim name="calendar_allowed" value="" placeholder="{{allowed_example}}" maxlength="255" autocomplete="off" spellcheck="false"></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label for="calendar_timezone" data-t="cfg.calTz">Local hour:</label></td>
+    <td>
+      <select name="calendar_timezone" id="calendar_timezone" data-config="calendar.timezone" data-type="number">
+        <option value="0">UTC</option>
+        <option value="1">US &mdash; Hawaii (UTC-10)</option>
+        <option value="2">US &mdash; Alaska (UTC-9)</option>
+        <option value="3">US &mdash; Pacific (UTC-8)</option>
+        <option value="4">US &mdash; Arizona (UTC-7)</option>
+        <option value="5">US &mdash; Mountain (UTC-7)</option>
+        <option value="6">US &mdash; Central (UTC-6)</option>
+        <option value="7">US &mdash; Eastern (UTC-5)</option>
+        <option value="8">Argentina (UTC-3)</option>
+        <option value="9">Brazil &mdash; S&atilde;o Paulo (UTC-3)</option>
+        <option value="10">United Kingdom (UTC+0)</option>
+        <option value="11" selected>Central Europe &mdash; Paris, Berlin (UTC+1)</option>
+        <option value="12">Eastern Europe &mdash; Athens, Helsinki (UTC+2)</option>
+        <option value="13">Turkey (UTC+3)</option>
+        <option value="14">India (UTC+5:30)</option>
+        <option value="15">China (UTC+8)</option>
+        <option value="16">Japan (UTC+9)</option>
+        <option value="17">Australia &mdash; Sydney (UTC+10)</option>
+        <option value="18">New Zealand (UTC+12)</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><div class="hint" data-t="cal.hint"></div></td>
+  </tr>
+</table>
+
+<!-- Filled from the board's "calendar" answer: its clock, how the last
+     fetch went, and one row per command coming up. -->
+<table>
+  <th colspan="2" data-t="cfg.calUpcoming">What is foretold</th>
+  <tr>
+    <td style="width: 130px;"><label data-t="cal.boardTime">Its hour:</label></td>
+    <td id="calendar_now">&mdash;</td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label data-t="cal.state">Omen:</label></td>
+    <td id="calendar_state" class="hint">&mdash;</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><input type="button" data-t="cfg.calRefresh" value="Read the almanac now" onclick="calendarRefresh()"></td>
+  </tr>
+</table>
+
+<table class="cal-schedule">
+  <tr>
+    <th data-t="cal.colWhen">Hour</th>
+    <th data-t="cal.colCommand">Rite</th>
+  </tr>
+  <tbody id="calendar_events"></tbody>
+</table>

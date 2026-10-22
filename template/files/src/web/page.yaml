@@ -1,0 +1,23 @@
+# This app's web page, built into the firmware by CMake (pico_os_web_page in
+# CMakeLists.txt). What can go in here: os/web/README.md.
+
+name: "@PROJECT_TITLE@"      # the page title, in every skin
+# text: text.yaml            # or this board's own wording, per skin
+
+config:                      # the Config tab; General and Server are always there
+  telegram: off              # on together with pico_telegram in CMakeLists.txt
+  calendar: off              # on together with pico_calendar_commands
+  # add_section:             # your own Config sections, after the ones above
+  #   app:
+  #     label: My app
+  #     fields:
+  #       - { config: app.city, label: "City:" }
+  #       - { config: app.interval, label: "Every (min):", type: number, default: 10 }
+
+tabs:                        # the row of tabs after Config; Firmware stays last
+  firmware: on
+  # add_tab:                 # your own tabs, right after Config
+  #   control:
+  #     label: Control
+  #     buttons:
+  #       - Say hello: example

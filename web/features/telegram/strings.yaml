@@ -1,0 +1,74 @@
+sub.telegram:
+  cartoon: Telegram
+  clean: Telegram
+  xeno: Messenger
+  fallout: Relay
+cfg.tg:
+  cartoon: Telegram
+  clean: Telegram
+  xeno: The messenger
+  fallout: Dispatch Relay
+cfg.tgToken:
+  cartoon: 'Bot Token:'
+  clean: Bot token
+  xeno: 'Sigil:'
+  fallout: 'Relay Key:'
+cfg.tgChat:
+  cartoon: 'Chat ID:'
+  clean: Chat ID
+  xeno: 'Ear:'
+  fallout: 'Recipient ID:'
+cfg.tgList:
+  cartoon: List Chats
+  clean: List chats
+  xeno: Name the ears
+  fallout: Enumerate Recipients
+cfg.tgClaim:
+  cartoon: Let the first chat that sends /start with a code pick itself
+  clean: Use the first chat that sends /start with a code
+  xeno: Listen for the first ear that speaks the word
+  fallout: Assign first recipient to transmit the passphrase
+cfg.tgCode:
+  cartoon: 'Claim code:'
+  clean: Claim code
+  xeno: 'The word:'
+  fallout: 'Passphrase:'
+tg.claimHint:
+  cartoon: Leave the Chat ID empty, pick a code nobody would guess and save. Once the board is online, send /start@YourBot <code> in the group (or /start <code> to the bot). That chat becomes the Chat ID. Clear the Chat ID to pick again.
+  clean: To claim bot enter /start <code> in a group chat, the bot will then answer only in that channel
+  xeno: Leave the ear empty and give it a word no one would guess. When it wakes, speak /start@YourBot <word> where it can hear, and that ear becomes its own. Empty the ear to choose again.
+  fallout: Leave Recipient ID blank, set an unguessable passphrase, save. When the unit is online, transmit /start@YourBot <passphrase> from the target channel; it is assigned as recipient. Blank the Recipient ID to reassign.
+tg.noToken:
+  cartoon: Enter the bot token first!
+  clean: Enter the bot token first.
+  xeno: It has no sigil to speak through.
+  fallout: No relay key entered.
+tg.badToken:
+  cartoon: That does not look like a token from @BotFather.
+  clean: That does not look like a bot token.
+  xeno: That is not a sigil it can use.
+  fallout: Malformed relay key.
+tg.loading:
+  cartoon: Loading...
+  clean: Loading…
+  xeno: Asking…
+  fallout: Querying…
+tg.found:
+  cartoon: '%n chats found — pick one to fill the Chat ID.'
+  clean: '%n chats found — select one to fill the Chat ID.'
+  xeno: '%n listening — choose the one it whispers to.'
+  fallout: '%n recipients on file — select one to assign.'
+tg.none:
+  cartoon: No chats found. Message the bot, or add it to a group and send /start, then try again — Telegram only shows chats with recent activity.
+  clean: No chats found. Message the bot, or add it to a group and send /start, then try again — Telegram only lists chats with recent activity.
+  xeno: Nothing is listening. Speak to the bot first — send it /start, or take it into a group — then ask again.
+  fallout: No recipients on file. Raise the relay first (/start, or add it to a group), then re-query — only recent traffic is listed.
+tg.failed:
+  cartoon: 'Telegram said no: '
+  clean: 'Could not list chats: '
+  xeno: 'Telegram would not answer: '
+  fallout: 'Relay refused the query: '
+
+narration:
+  cartoon:
+  - Hook up Telegram and it can message you when something happens. 💬

@@ -1,0 +1,4 @@
+# Telegram: bot token, chat id, a picker that lists the bot's chats, and a
+# claim code: the first chat to send "/start <code>" becomes the chat.
+# Settings: config.telegram. A board turns it on with `telegram: on`.
+library: pico_telegram

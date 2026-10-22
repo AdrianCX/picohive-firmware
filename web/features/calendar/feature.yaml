@@ -1,0 +1,10 @@
+# Calendar commands: an event titled "<device id>/<command>" runs the command
+# when it starts, if it is on the allowed list. Shows what is coming up.
+# Settings: config.calendar.
+library: pico_calendar_commands
+
+# The examples in the device id and allowed fields, for a board to show its own:
+#   calendar: { id_example: garden, allowed_example: water stop }
+options:
+  id_example:      { default: mydevice }
+  allowed_example: { default: example reboot }

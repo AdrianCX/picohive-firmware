@@ -1,0 +1,18 @@
+# Domains the board talks to over TLS. At build time each one is reached, the
+# chain it sends is followed, and the root CA that signs it is built into the
+# firmware (in flash). An app replaces this list with src/config/tls_domains.txt.
+#
+# One domain per line, host or host:port. "root <common name>" adds a root
+# from the build machine's CA bundle by name, for a host the build cannot reach.
+
+api.openai.com
+openrouter.ai
+api.anthropic.com
+api.telegram.org
+calendar.google.com
+www.googleapis.com
+mqtt.picohive.com:8883
+
+# Let's Encrypt (claude.ai, most self-hosted brokers) issues under either root.
+root ISRG Root X1
+root ISRG Root X2

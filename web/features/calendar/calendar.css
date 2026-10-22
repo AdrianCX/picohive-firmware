@@ -1,0 +1,32 @@
+/* The calendar's schedule: a real two column table, date then command, a
+   hairline between rows. Spacing comes from the cells, not the gaps every
+   skin puts between rows. "html" for the same reason as above; the grey
+   hairline reads on the light skins and the dark one alike. */
+html table.cal-schedule { border-spacing: 0; }
+html table.cal-schedule th { padding-top: 0; padding-left: 6px; padding-right: 6px; }
+html table.cal-schedule td {
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(127,127,127,0.2);
+    vertical-align: top;
+}
+html table.cal-schedule tr:last-child td { border-bottom: 0; }
+/* The date and the hour each stay whole; on a narrow screen the hour goes
+   under the date rather than a command being broken in the middle. */
+html table.cal-schedule td.cal-when {
+    width: 13em;
+    padding-right: 22px;
+    font-variant-numeric: tabular-nums;
+}
+html table.cal-schedule td.cal-when span { white-space: nowrap; }
+html table.cal-schedule td.cal-command { overflow-wrap: break-word; }
+/* A phone: every hour under its date, so the rows all read the same. */
+@media (max-width: 520px) {
+    html table.cal-schedule { padding-left: 10px; padding-right: 10px; }
+    html table.cal-schedule td,
+    html table.cal-schedule th { padding-left: 4px; padding-right: 4px; }
+    html table.cal-schedule td.cal-when { width: auto; padding-right: 12px; }
+    html table.cal-schedule td.cal-when span { display: block; }
+}
+html table.cal-schedule tr.cal-blocked td { opacity: 0.5; }
+html table.cal-schedule td.hint { margin: 0; }
+/* Held down while talking: no long-press menu or text selection on a phone. */

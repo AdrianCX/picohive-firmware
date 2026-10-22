@@ -1,0 +1,7 @@
+build/
+*.html.gz
+*.html.gz.hex.h
+
+# Signing keys never go into git. Back them up somewhere safe: lose a version
+# and the devices running it only accept firmware over USB again.
+keys/

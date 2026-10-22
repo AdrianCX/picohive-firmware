@@ -1,0 +1,77 @@
+<html><head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<title>{{title}}</title>
+
+<!-- The page every board shares. build_web_page.py fills each @ line in:
+     @style    skins.css, then every feature's *.css
+     @strings  STR, PAGE_NARRATION and PAGE_LOST: base + features + the board's text
+     @scripts  core.js, then every feature's *.js
+     @tabs / @subtabs / @sections / @pages   from the board's page.yaml
+     (@tabs is the whole row, Config included: tabs: order: moves it) -->
+<style type="text/css">
+<!-- @style -->
+</style>
+<script type="text/javascript">
+<!-- @strings -->
+<!-- @include theme.js -->
+</script>
+
+<script type="text/javascript">
+<!-- @scripts -->
+</script>
+</head>
+<body>
+
+<div class="masthead">
+  <span class="sigil">&#10087;</span>
+  <h1 class="glitch" data-t="app.title" data-text="{{app.title}}">{{app.title}}</h1>
+  <div class="subtitle" data-t="app.tagline"></div>
+</div>
+
+
+<div class="container">
+    <div class="bleed" aria-hidden="true"><i class="d1"></i><i class="d2"></i><i class="d3"></i></div>
+    <!-- One tray: the main tabs, and under them Config's sections. -->
+    <div class="tab nav-tray">
+      <div class="tab-row">
+<!-- @tabs -->
+      </div>
+      <div id="config_subtabs" class="tab-row subtabs">
+<!-- @subtabs -->
+      </div>
+    </div>
+
+    <div id="hud" class="hud hud-connecting">
+      <span class="hud-lamp"></span>
+      <span id="hud-state" class="hud-state" data-t="hud.init">Listening</span>
+      <span id="hud-detail" class="hud-detail"></span>
+      <button id="hud-retry" data-t="hud.retry" onclick="handler.reconnectNow()">Call Again</button>
+      <i id="hud-bar-fill" class="hud-bar"></i>
+    </div>
+
+    <div id="Config" class="tabcontent">
+<!-- @sections -->
+
+      <div style="text-align: center;">
+          <input type="submit" data-t="cfg.bind" value="Save" onclick="sendConfig()" style="width:100%;"><br><br>
+
+          <input type="submit" data-t="cfg.reboot" value="Reboot" onclick="sendReboot()" class="danger"><br>
+
+          <input type="submit" data-t="cfg.wipe" value="Wipe" onclick="formatFilesystem()" class="danger">
+      </div>
+    </div>
+
+<!-- @pages -->
+
+    <div id="whisper"></div>
+
+<div id="toasts" class="toasts"></div>
+
+<i id="tear" aria-hidden="true"></i>
+<div id="blackout"><span>signal lost</span></div>
+
+<script type="text/javascript">
+<!-- @include effects.js -->
+</script>
+
+</body></html>

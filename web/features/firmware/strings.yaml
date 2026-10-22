@@ -1,0 +1,29 @@
+tab.firmware:
+  cartoon: Synchronize with the Oversoul
+  clean: Firmware
+  xeno: Ascension
+  fallout: ROM Overwrite
+upg.hint:
+  cartoon: Upload .uf2.encrypted file to evolve the gadget.
+  clean: Upload a packaged firmware file (.uf2.encrypted) to update the device.
+  xeno: Feed it a new .uf2.encrypted. What wakes up will wear the same shell.
+  fallout: Upload a replacement ROM. The unit that comes back up answers to the same designation.
+upg.go:
+  cartoon: Trigger the Metamorphosis
+  clean: Update firmware
+  xeno: Trigger the metamorphosis
+  fallout: Overwrite System ROM
+lbl.fwUpload:
+  cartoon: Firmware upload
+  clean: Firmware upload
+  xeno: Shell transfer
+  fallout: ROM transfer
+lbl.fwFlash:
+  cartoon: Firmware flash
+  clean: Firmware flash
+  xeno: Shell rewrite
+  fallout: ROM overwrite
+
+narration:
+  cartoon:
+  - Firmware update? Brave! It will be right back, promise. 🚀

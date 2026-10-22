@@ -1,0 +1,110 @@
+<table>
+  <th colspan="2" data-t="skin.header">Presentation</th>
+  <tr>
+    <td style="width: 130px;"><label for="theme" data-t="skin.label">Skin:</label></td>
+    <td>
+      <select name="theme" id="theme" onchange="setTheme(this.value)">
+        <option value="cartoon" data-t="skin.optCartoon">Original &mdash; loud and harmless</option>
+        <option value="clean" data-t="skin.optClean">Modern &mdash; honey, light or dark</option>
+        <option value="xeno" data-t="skin.optXeno">Xenoform &mdash; bone, hairline, blood</option>
+        <option value="fallout" data-t="skin.optFallout">Fallout &mdash; phosphor, concrete, rust</option>
+      </select>
+    </td>
+  </tr>
+</table>
+<table>
+  <th colspan="2" data-t="cfg.wifi">Carrier signal</th>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.wifiName">Name:</label></td>
+    <td><input type="text" id="wifi_ssid" data-config="wifi.ssid" name="wifi_ssid" value=""></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.wifiPass">Password:</label></td>
+    <td><div class="secret-row"><input type="text" id="wifi_pass" data-config="wifi.pass" name="wifi_pass" value="" data-hint="" autocomplete="off" spellcheck="false"><input type="button" id="wifi_pass_forget" data-t="cfg.forget" value="Forget" onclick="forgetSecret('wifi_pass')" style="display:none"></div></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.wifiAuth">Handshake:</label></td>
+    <td>
+      <select name="wifi_auth" id="wifi_auth" data-config="wifi.auth" data-type="number" onchange="updateWifiAuthWarn()">
+        <option value="0">OPEN</option>
+        <option value="1">WPA_TKIP_PSK</option>
+        <option value="2" selected>WPA2_AES_PSK</option>
+        <option value="3">WPA2_MIXED_PSK</option>
+        <option value="4">WPA3_SAE_AES_PSK</option>
+        <option value="5">WPA3_WPA2_AES_PSK</option>
+      </select>
+      <div class="hint" id="wifi_auth_warn" style="display:none; margin: 6px 0 0;"><span data-t="cfg.wifiAuthWarn">WPA3 drops the connection every ~11 hours on this Wi-Fi chip, use WPA2 if the router allows it.</span> <a href="https://github.com/georgerobotics/cyw43-driver/issues/161" target="_blank" rel="noopener">cyw43-driver #161</a></div>
+    </td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.wifiCountry">Country:</label></td>
+    <td>
+      <select name="wifi_country" id="wifi_country" data-config="wifi.country">
+        <option value="XX">Worldwide</option>
+        <option value="AU">Australia</option>
+        <option value="AT">Austria</option>
+        <option value="BE">Belgium</option>
+        <option value="BR">Brazil</option>
+        <option value="CA">Canada</option>
+        <option value="CL">Chile</option>
+        <option value="CN">China</option>
+        <option value="CO">Colombia</option>
+        <option value="CZ">Czech Republic</option>
+        <option value="DK">Denmark</option>
+        <option value="EE">Estonia</option>
+        <option value="FI">Finland</option>
+        <option value="FR">France</option>
+        <option value="DE">Germany</option>
+        <option value="GR">Greece</option>
+        <option value="HK">Hong Kong</option>
+        <option value="HU">Hungary</option>
+        <option value="IS">Iceland</option>
+        <option value="IN">India</option>
+        <option value="IL">Israel</option>
+        <option value="IT">Italy</option>
+        <option value="JP">Japan</option>
+        <option value="KE">Kenya</option>
+        <option value="LV">Latvia</option>
+        <option value="LI">Liechtenstein</option>
+        <option value="LT">Lithuania</option>
+        <option value="LU">Luxembourg</option>
+        <option value="MY">Malaysia</option>
+        <option value="MT">Malta</option>
+        <option value="MX">Mexico</option>
+        <option value="NL" selected>Netherlands</option>
+        <option value="NZ">New Zealand</option>
+        <option value="NG">Nigeria</option>
+        <option value="NO">Norway</option>
+        <option value="PE">Peru</option>
+        <option value="PH">Philippines</option>
+        <option value="PL">Poland</option>
+        <option value="PT">Portugal</option>
+        <option value="SG">Singapore</option>
+        <option value="SK">Slovakia</option>
+        <option value="SI">Slovenia</option>
+        <option value="ZA">South Africa</option>
+        <option value="KR">South Korea</option>
+        <option value="ES">Spain</option>
+        <option value="SE">Sweden</option>
+        <option value="CH">Switzerland</option>
+        <option value="TW">Taiwan</option>
+        <option value="TH">Thailand</option>
+        <option value="TR">Turkey</option>
+        <option value="GB">United Kingdom</option>
+        <option value="US">United States</option>
+      </select>
+    </td>
+  </tr>
+</table>
+<table>
+  <th colspan="2" data-t="cfg.web">Page login</th>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.user">User:</label></td>
+    <td><input type="text" id="web_user" data-config="web.user" name="web_user" value="" autocomplete="off" spellcheck="false"></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.pass">Password:</label></td>
+    <td><div class="secret-row"><input type="text" id="web_pass" data-config="web.pass" name="web_pass" value="" data-hint="" autocomplete="off" spellcheck="false"><input type="button" id="web_pass_forget" data-t="cfg.forget" value="Forget" onclick="forgetSecret('web_pass')" style="display:none"></div></td>
+  </tr>
+</table>
+

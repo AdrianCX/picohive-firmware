@@ -1,0 +1,5 @@
+//devcontainer.json
+{
+  "name": "picohive-firmware dev container",
+  "dockerFile": "./pico.Dockerfile"
+}

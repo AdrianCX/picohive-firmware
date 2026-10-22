@@ -1,0 +1,32 @@
+<div id="telegram_section">
+<table>
+  <th colspan="2" data-t="cfg.tg">Telegram</th>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.tgToken">Bot Token:</label></td>
+    <td><div class="secret-row"><input type="text" id="telegram_bot_token" data-config="telegram.token" name="telegram_bot_token" value="" placeholder="123456789:ABCdef..." data-hint="123456789:ABCdef..." autocomplete="off" spellcheck="false"><input type="button" id="telegram_bot_token_forget" data-t="cfg.forget" value="Forget" onclick="forgetSecret('telegram_bot_token')" style="display:none"></div></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.tgChat">Chat ID:</label></td>
+    <td><input type="text" id="telegram_chat_id" data-config="telegram.chat" name="telegram_chat_id" value="" placeholder="e.g. 123456789" autocomplete="off" spellcheck="false"></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <input type="button" id="telegram_list" data-t="cfg.tgList" value="List Chats" onclick="listChats()">
+      <select id="telegram_chats" size="5" style="display:none" onchange="pickChat()"></select>
+      <div class="hint" id="telegram_hint" style="display:none"></div>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><input type="checkbox" id="telegram_claim" data-config="telegram.claim" name="telegram_claim" onchange="telegramClaimShown()"><label for="telegram_claim" data-t="cfg.tgClaim">Use the first chat that sends /start with a code</label></td>
+  </tr>
+  <tr id="telegram_claim_row" style="display:none">
+    <td style="width: 130px;"><label data-t="cfg.tgCode">Claim code:</label></td>
+    <td>
+      <input type="text" id="telegram_claim_code" data-config="telegram.claim_code" data-trim name="telegram_claim_code" value="" maxlength="30" autocomplete="off" spellcheck="false">
+      <div class="hint" data-t="tg.claimHint"></div>
+    </td>
+  </tr>
+</table>
+</div>

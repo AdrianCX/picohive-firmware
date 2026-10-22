@@ -1,0 +1,74 @@
+sub.calendar:
+  cartoon: Calendar
+  clean: Calendar
+  xeno: Almanac
+  fallout: Roster
+cfg.cal:
+  cartoon: Calendar
+  clean: Calendar
+  xeno: The almanac
+  fallout: Duty Roster
+cfg.calUrl:
+  cartoon: 'iCal URL:'
+  clean: iCal address
+  xeno: 'Almanac:'
+  fallout: 'Roster Feed:'
+cfg.calId:
+  cartoon: 'Device ID:'
+  clean: Device ID
+  xeno: 'True name:'
+  fallout: 'Unit Designation:'
+cfg.calAllowed:
+  cartoon: 'Allowed:'
+  clean: Allowed commands
+  xeno: 'Permitted rites:'
+  fallout: 'Authorized Orders:'
+cfg.calTz:
+  cartoon: 'Timezone:'
+  clean: Timezone
+  xeno: 'Local hour:'
+  fallout: 'Local Zone:'
+cal.hint:
+  cartoon: 'Name an event <device id>/example and the example command runs when it starts! Only commands in Allowed run, space separated: example reboot. Use the calendar''s secret iCal address.'
+  clean: 'An event titled <device id>/example runs the example command when it starts. Only commands on the allowed list run, space separated: example reboot. Use the calendar''s secret address in iCal format.'
+  xeno: 'Mark the almanac with <true name>/example and when that hour comes the rite is performed. Only the rites named here are obeyed, space between them: example reboot. The almanac is its secret iCal address.'
+  fallout: 'Roster entries titled <designation>/example execute at start time. Only authorized orders execute, space separated: example reboot. Feed is the private iCal address.'
+cfg.calRefresh:
+  cartoon: Refresh now
+  clean: Refresh now
+  xeno: Read the almanac now
+  fallout: Re-sync Roster
+cfg.calUpcoming:
+  cartoon: Coming Up
+  clean: Upcoming
+  xeno: What is foretold
+  fallout: Pending Orders
+cal.boardTime:
+  cartoon: 'Pico time:'
+  clean: Device time
+  xeno: 'Its hour:'
+  fallout: 'Unit Clock:'
+cal.state:
+  cartoon: 'Status:'
+  clean: Status
+  xeno: 'Omen:'
+  fallout: 'Status:'
+cal.notAllowed:
+  cartoon: not allowed
+  clean: not allowed
+  xeno: forbidden
+  fallout: DENIED
+cal.colWhen:
+  cartoon: When
+  clean: When
+  xeno: Hour
+  fallout: Scheduled
+cal.colCommand:
+  cartoon: Command
+  clean: Command
+  xeno: Rite
+  fallout: Order
+
+narration:
+  cartoon:
+  - Put a command in your calendar and it runs right on time. 📅

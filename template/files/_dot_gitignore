@@ -1,0 +1,11 @@
+build/
+*.html.gz
+*.html.gz.hex.h
+
+# OTA signing keys, see os/docs/ota.md. Back them up somewhere safe:
+# lose a version and the devices running it only accept firmware over USB.
+keys/
+
+# HTTPS certificate from os/util/make_cert.sh: key.h is the private key, and
+# key.h and cert.h only work as a pair. Make one per board, keep it out of git.
+src/certificate/

@@ -1,0 +1,4 @@
+# Firmware update: the Firmware tab, upload a .uf2.encrypted.
+# On unless a board says `firmware: off`.
+default: on
+id: Upgrade                  # the element id the skins style (#Upgrade)
