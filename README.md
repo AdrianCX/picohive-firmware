@@ -11,7 +11,7 @@
 - **Setup**: just invoke the template script to create a project
 - **Extending**: Put classes in commands folder, use a macro to allow calls from: MQTT, WebSocket, Telegram, Calendar, AI tools
 - **Configuring**: Access point on first boot with a themed config page, settings are kept in flash encrypted
-- **Protocols**: HTTP, HTTPS, WebSocket, MQTT, google calendar, telegram - all funneled into commands
+- **Protocols**: HTTP, HTTPS, WebSocket, MQTT, openAI, google calendar, telegram - all funneled into commands
 - **Building**: call one script, builds easily in a container, no toolchain needed
 - **Memory**: Simple efficient code, script for stack size on build, runtime prints for monitoring
 - **Linux**: same apps running on linux under valgrind/gdb, mocked hardware
@@ -65,6 +65,12 @@ Outgoing TLS:
   build connects to all hosts finds root cert within build machine's CA bundle
 - Can be overridden in app via src/config/tls_domains.txt, `root <name>` adds a root forcefully
 - The network is only used when the list changes for convenience
+
+OpenAI key:
+- The board calls OpenAI directly, with no server in between, so the API key has to be stored on the board
+- Config file is encrypted with a key derived from the board.
+- Anyone with the board in hand can recover it, see config file above, planning OTP solution in the future
+- Use an OpenAI project key with a spending cap, and monitor its usage. Best practice for any API key
 
 Calendar commands:
 - Always use a dedicated calendar with invitations off, it's easy to set up and avoids running commands that other people send as event invites

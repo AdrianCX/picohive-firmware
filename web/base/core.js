@@ -59,16 +59,33 @@ function hudProgress(fraction) {
     if (fill) fill.style.width = Math.round(fraction * 100) + "%";
 }
 
+// The same toast again while it is still up is counted on it, not stacked, and keeps it up.
+var hudToasts = {};
+
 function hudToast(kind, text) {
     var box = document.getElementById("toasts");
     if (!box) return;
-    var toast = document.createElement("div");
-    toast.className = "toast " + kind;
-    toast.textContent = text;
-    box.appendChild(toast);
-    setTimeout(() => {
-        toast.className += " out";
-        setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 400);
+
+    var key = kind + "|" + text;
+    var toast = hudToasts[key];
+
+    if (toast) {
+        ++toast.count;
+        toast.el.textContent = text + " \u00D7" + toast.count;
+        clearTimeout(toast.timer);
+    }
+    else {
+        var el = document.createElement("div");
+        el.className = "toast " + kind;
+        el.textContent = text;
+        box.appendChild(el);
+        toast = hudToasts[key] = { el: el, count: 1, timer: 0 };
+    }
+
+    toast.timer = setTimeout(() => {
+        delete hudToasts[key];
+        toast.el.className += " out";
+        setTimeout(() => { if (toast.el.parentNode) toast.el.parentNode.removeChild(toast.el); }, 400);
     }, 3500);
 }
 

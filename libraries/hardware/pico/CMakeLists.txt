@@ -1,2 +1,3 @@
 add_subdirectory(pico_noexcept)
 add_subdirectory(pico_sleep)
+add_subdirectory(pico_st3215)

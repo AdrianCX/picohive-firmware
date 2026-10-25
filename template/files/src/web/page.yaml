@@ -7,6 +7,7 @@ name: "@PROJECT_TITLE@"      # the page title, in every skin
 config:                      # the Config tab; General and Server are always there
   telegram: off              # on together with pico_telegram in CMakeLists.txt
   calendar: off              # on together with pico_calendar_commands
+  openai:   off              # on together with pico_openai
   # add_section:             # your own Config sections, after the ones above
   #   app:
   #     label: My app

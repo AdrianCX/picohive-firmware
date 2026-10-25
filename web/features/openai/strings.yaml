@@ -1,0 +1,80 @@
+cfg.aiTalk:
+  cartoon: Hold to talk
+  clean: Hold to talk
+  xeno: Hold and speak
+  fallout: Hold to Transmit
+ai.listening:
+  cartoon: Listening…
+  clean: Listening…
+  xeno: it is listening…
+  fallout: Receiving…
+cfg.aiTalkSend:
+  cartoon: Ask when I let go
+  clean: Ask when I let go
+  xeno: Ask when released
+  fallout: Transmit on release
+ai.talkHttps:
+  cartoon: 'Talking works on the https page:'
+  clean: 'Hold to talk needs the https page:'
+  xeno: 'Speaking needs the sealed page:'
+  fallout: 'Voice link requires the secure channel:'
+cfg.aiInstr:
+  cartoon: 'Instructions:'
+  clean: Instructions
+  xeno: 'Standing orders:'
+  fallout: 'Standing Orders:'
+cfg.aiTools:
+  cartoon: 'Can use commands:'
+  clean: Let it run commands
+  xeno: 'It may act:'
+  fallout: 'Command Access:'
+cfg.aiTry:
+  cartoon: Try it!
+  clean: Try it
+  xeno: Speak to it
+  fallout: Direct Query
+cfg.aiRequest:
+  cartoon: 'Ask:'
+  clean: Request
+  xeno: 'Your will:'
+  fallout: 'Order:'
+cfg.aiAsk:
+  cartoon: Ask
+  clean: Ask
+  xeno: Ask
+  fallout: Transmit
+cfg.aiStatus:
+  cartoon: 'Answer:'
+  clean: Status
+  xeno: 'Its reply:'
+  fallout: 'Report:'
+ai.hint:
+  cartoon: Ask in plain words! It uses the board's commands to do it, then tells you how it went.
+  clean: 'Ask in plain words. It runs the board''s own commands to do it, then answers here. Also: /ai in Telegram, send/ai over MQTT.'
+  xeno: say what should be done. it uses the board's own commands, and says what it did.
+  fallout: Plain-language order. The core executes it with board commands and reports back.
+sub.openai:
+  cartoon: Brain
+  clean: OpenAI
+  xeno: Oracle
+  fallout: Core
+cfg.ai:
+  cartoon: OpenAI
+  clean: OpenAI
+  xeno: The oracle
+  fallout: Language Core
+cfg.aiUrl:
+  cartoon: 'Base URL:'
+  clean: Base URL
+  xeno: 'Whereabouts:'
+  fallout: 'Core Uplink:'
+cfg.aiKey:
+  cartoon: 'API Key:'
+  clean: API key
+  xeno: 'Offering:'
+  fallout: 'Access Key:'
+cfg.aiModel:
+  cartoon: 'Model:'
+  clean: Model
+  xeno: 'Voice:'
+  fallout: 'Core Model:'

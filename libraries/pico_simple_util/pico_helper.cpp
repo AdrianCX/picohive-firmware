@@ -7,6 +7,8 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
+#include <stdio.h>
+
 #include "pico_helper.h"
 
 bool PicoHelper::parse_number(std::string_view text, uint32_t& value)
@@ -58,4 +60,16 @@ bool PicoHelper::parse_hex(const char *hex, uint8_t *out, uint32_t len)
         digits++;
     }
     return digits == len * 2;
+}
+
+void PicoHelper::hex_into(char *out, size_t size, const uint8_t *data, uint32_t count)
+{
+    size_t pos = 0;
+
+    for (uint32_t i = 0; (i < count) && (pos + 4 < size); ++i)
+    {
+        pos += snprintf(&out[pos], size - pos, "%s%02X", (i > 0) ? " " : "", data[i]);
+    }
+
+    out[(pos < size) ? pos : (size - 1)] = 0;
 }

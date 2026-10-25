@@ -1,0 +1,53 @@
+<table>
+  <th colspan="2" data-t="cfg.ai">The oracle</th>
+  <tr>
+    <td style="width: 130px;"><label for="openai_url" data-t="cfg.aiUrl">Whereabouts:</label></td>
+    <td><input type="text" id="openai_url" data-config="openai.url" data-trim name="openai_url" value="" placeholder="https://api.openai.com/v1" maxlength="127" autocomplete="off" spellcheck="false"></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label for="openai_key" data-t="cfg.aiKey">Offering:</label></td>
+    <td><div class="secret-row"><input type="text" id="openai_key" data-config="openai.key" name="openai_key" value="" placeholder="sk-..." data-hint="sk-..." maxlength="255" autocomplete="off" spellcheck="false"><input type="button" id="openai_key_forget" data-t="cfg.forget" value="Forget" onclick="forgetSecret('openai_key')" style="display:none"></div></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label for="openai_model" data-t="cfg.aiModel">Voice:</label></td>
+    <td><input type="text" id="openai_model" data-config="openai.model" data-trim name="openai_model" value="" placeholder="gpt-4o-mini" maxlength="63" autocomplete="off" spellcheck="false"></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label for="openai_instructions" data-t="cfg.aiInstr">Standing orders:</label></td>
+    <td><textarea id="openai_instructions" data-config="openai.instructions" data-trim name="openai_instructions" rows="3" maxlength="511" placeholder="e.g. what this device is for, and anything it must never do" spellcheck="false"></textarea></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label for="openai_tools" data-t="cfg.aiTools">It may act:</label></td>
+    <td><input type="checkbox" id="openai_tools" data-config="openai.tools" name="openai_tools" checked></td>
+  </tr>
+</table>
+
+<!-- A request in words: ai runs it with the board's commands, ai/status
+     says how far it got and what it answered. -->
+<table>
+  <th colspan="2" data-t="cfg.aiTry">Speak to it</th>
+  <tr>
+    <td style="width: 130px;"><label for="openai_request" data-t="cfg.aiRequest">Your will:</label></td>
+    <td><textarea id="openai_request" rows="2" maxlength="500" placeholder="What to do, in plain words" spellcheck="false"></textarea></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><input type="button" id="openai_ask" data-t="cfg.aiAsk" value="Ask" onclick="aiAsk()"> <input type="button" value="Stop" onclick="aiStop()"></td>
+  </tr>
+  <tr id="openai_talk_row" style="display:none">
+    <td></td>
+    <td><input type="button" id="openai_talk" data-t="cfg.aiTalk" value="Hold to talk"> <input type="checkbox" id="openai_talk_send" checked onchange="aiTalkRemember()"><label for="openai_talk_send" data-t="cfg.aiTalkSend">Ask when I let go</label></td>
+  </tr>
+  <tr id="openai_talk_https" style="display:none">
+    <td></td>
+    <td><div class="hint"><span data-t="ai.talkHttps">Hold to talk needs the https page:</span> <a id="openai_talk_link" href="#"></a></div></td>
+  </tr>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.aiStatus">Its reply:</label></td>
+    <td><div id="openai_status" class="hint" style="white-space: pre-wrap;">&mdash;</div></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><div class="hint" data-t="ai.hint"></div></td>
+  </tr>
+</table>

@@ -20,6 +20,9 @@ public:
     // Reads hex digits into out, skipping '-', true when exactly len bytes were read.
     static bool parse_hex(const char *hex, uint8_t *out, uint32_t len);
 
+    // Writes count bytes as space separated hex ("0A FF 01") into out, as many as fit, always terminated.
+    static void hex_into(char *out, size_t size, const uint8_t *data, uint32_t count);
+
 private:
     static int hex_value(char c);
 };
