@@ -7,7 +7,9 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
+#include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "pico_helper.h"
 
@@ -72,4 +74,73 @@ void PicoHelper::hex_into(char *out, size_t size, const uint8_t *data, uint32_t 
     }
 
     out[(pos < size) ? pos : (size - 1)] = 0;
+}
+
+bool PicoHelper::is_domain(const char *host)
+{
+    if ((host == nullptr) || (*host == 0))
+    {
+        return true;
+    }
+
+    if (*host == '[')
+    {
+        const char *end = strchr(host, ']');
+        if ((end == nullptr) || (end == host + 1))
+        {
+            return true;
+        }
+
+        for (const char *p = host + 1; p < end; ++p)
+        {
+            if (!(isxdigit((unsigned char)*p) || (*p == ':') || (*p == '.')))
+            {
+                return true;
+            }
+        }
+        host = end + 1;
+    }
+    else
+    {
+        int dots = 0;
+        int digits = 0;
+        int value = 0;
+        for (; (*host != 0) && (*host != ':'); ++host)
+        {
+            if (*host == '.')
+            {
+                if (digits == 0) { return true; }
+                ++dots;
+                digits = 0;
+                value = 0;
+            }
+            else if (isdigit((unsigned char)*host) && (digits < 3))
+            {
+                value = value * 10 + (*host - '0');
+                ++digits;
+                if (value > 255) { return true; }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        if ((dots != 3) || (digits == 0))
+        {
+            return true;
+        }
+    }
+
+    if (*host == ':')
+    {
+        ++host;
+        if (*host == 0) { return true; }
+        for (; *host != 0; ++host)
+        {
+            if (!isdigit((unsigned char)*host)) { return true; }
+        }
+    }
+
+    return (*host != 0);
 }

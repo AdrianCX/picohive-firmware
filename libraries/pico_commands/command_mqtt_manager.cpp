@@ -176,6 +176,13 @@ bool CommandMqttManager::on_publish_header(uint8_t *topic, uint16_t topic_length
     hold_ack(message_id);
 
     const int HEADER_LEN = 8;
+    int name_length = strlen(get_config().mqtt_user);
+
+    if (topic_length < HEADER_LEN + name_length + 1)
+    {
+        return ack_when_done();
+    }
+
     if (strncmp((const char *)topic, "devices/", HEADER_LEN) != 0)
     {
         // Command not meant for us - only messages towards our app id are accepted.
@@ -185,8 +192,7 @@ bool CommandMqttManager::on_publish_header(uint8_t *topic, uint16_t topic_length
     topic += HEADER_LEN;
     topic_length -= HEADER_LEN;
     
-    int name_length = strlen(get_config().mqtt_user);
-    if (strncmp((const char *)topic, get_config().mqtt_user, name_length) != 0)
+    if ((strncmp((const char *)topic, get_config().mqtt_user, name_length) != 0) || (topic[name_length] != '/'))
     {
         // Command not meant for us - only messages towards our app id are accepted.
         return ack_when_done();

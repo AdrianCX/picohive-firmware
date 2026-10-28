@@ -21,6 +21,25 @@ endif()
 
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${tls_domains_file}")
 
+if (DEFINED ENV{SOURCE_DATE_EPOCH})
+  set(PICO_TLS_BUILD_EPOCH "$ENV{SOURCE_DATE_EPOCH}")
+else()
+  string(TIMESTAMP PICO_TLS_BUILD_EPOCH "%s" UTC)
+endif()
+
+math(EXPR PICO_TLS_DAY_BEFORE "${PICO_TLS_BUILD_EPOCH} - 86400")
+set(PICO_TLS_SAVED_EPOCH "$ENV{SOURCE_DATE_EPOCH}")
+set(ENV{SOURCE_DATE_EPOCH} "${PICO_TLS_DAY_BEFORE}")
+string(TIMESTAMP PICO_TLS_EXPIRED_BEFORE "%Y%m%d" UTC)
+if (PICO_TLS_SAVED_EPOCH STREQUAL "")
+  unset(ENV{SOURCE_DATE_EPOCH})
+else()
+  set(ENV{SOURCE_DATE_EPOCH} "${PICO_TLS_SAVED_EPOCH}")
+endif()
+
+file(WRITE "${CMAKE_BINARY_DIR}/generated/pico_tls_build_date.h.in" "#pragma once\n#define PICO_TLS_EXPIRED_BEFORE ${PICO_TLS_EXPIRED_BEFORE}\n")
+configure_file("${CMAKE_BINARY_DIR}/generated/pico_tls_build_date.h.in" "${CMAKE_BINARY_DIR}/generated/pico_tls_build_date.h" COPYONLY)
+
 target_sources(pico_tls INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}/mbedtls_wrapper.c
   ${CMAKE_CURRENT_SOURCE_DIR}/root_certificates.cpp
@@ -38,4 +57,4 @@ else()
   target_link_libraries(pico_tls INTERFACE pico_lwip_mbedtls pico_mbedtls pico_logger pico_simple_util)
 endif()
 
-target_include_directories(pico_tls INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/${PICO_OS_PLATFORM} ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(pico_tls INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/${PICO_OS_PLATFORM} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/generated)

@@ -255,7 +255,14 @@ bool HTTPHeader::parse_chunk(char *data, int& len, int& i)
             if (m_index == MAX_HEADER_SIZE) { return false; }
 
             // The \r needs to go away
-            m_text[m_index-1] = 0;
+            if ((m_index > m_start) && (m_text[m_index-1] == '\r'))
+            {
+                m_text[m_index-1] = 0;
+            }
+            else
+            {
+                m_text[m_index++] = 0;
+            }
 
             m_headerValue[m_currentHeader] = &m_text[m_start];
             m_state = STATE_NAME;

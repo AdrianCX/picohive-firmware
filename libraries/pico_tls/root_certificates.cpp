@@ -13,6 +13,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "mbedtls/platform.h"
 #include "pico_logger.h"
+#include "pico_tls_build_date.h"
 
 int RootCertificates::find(void *context, const mbedtls_x509_crt *child, mbedtls_x509_crt **candidates)
 {
@@ -55,6 +56,11 @@ int RootCertificates::find(void *context, const mbedtls_x509_crt *child, mbedtls
 
 int RootCertificates::check(void *context, mbedtls_x509_crt *crt, int depth, uint32_t *flags)
 {
+    if (expired(crt))
+    {
+        *flags |= MBEDTLS_X509_BADCERT_EXPIRED;
+    }
+
     if (*flags != 0)
     {
         trace("tls: certificate %d of the chain refused, flags 0x%x:%s%s%s%s", depth, (unsigned int)*flags,
@@ -65,4 +71,11 @@ int RootCertificates::check(void *context, mbedtls_x509_crt *crt, int depth, uin
     }
 
     return 0;
+}
+
+bool RootCertificates::expired(const mbedtls_x509_crt *crt)
+{
+    const mbedtls_x509_time& to = crt->valid_to;
+
+    return ((to.year * 10000) + (to.mon * 100) + to.day) < PICO_TLS_EXPIRED_BEFORE;
 }

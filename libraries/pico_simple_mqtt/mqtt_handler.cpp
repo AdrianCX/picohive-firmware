@@ -148,7 +148,13 @@ bool MQTTSocketHandler::decode_header(uint8_t*& data, size_t& len)
         
         length += ((uint32_t)(m_recvBuffer[pos] & 0x7F)) << ((pos-1)*7);
 
-    } while (((m_recvBuffer[pos] & 0x80) != 0) && (pos < 5));
+    } while (((m_recvBuffer[pos] & 0x80) != 0) && (pos < 4));
+
+    if ((m_recvBuffer[pos] & 0x80) != 0)
+    {
+        trace("MQTTSocketHandler::decode_header: this=%p, malformed remaining length", this);
+        return false;
+    }
 
     ++pos;
 
@@ -222,6 +228,12 @@ bool MQTTSocketHandler::decode_publish_header(uint8_t*& data, size_t& len, uint3
                 
     uint16_t message_id = (m_recvBuffer[0] & (MQTTQOS1 | MQTTQOS2)) ? (m_recvBuffer[pos] << 8) + m_recvBuffer[pos+1] : 0;
     pos += (m_recvBuffer[0] & (MQTTQOS1 | MQTTQOS2)) ? 2 : 0;
+
+    if (pos > msg_size)
+    {
+        trace("MQTTSocketHandler::decode_publish_header: topic/message id exceed remaining length, pos[%d] msg_size[%d]", pos, msg_size);
+        return false;
+    }
 
     uint32_t message_length = msg_size - pos;
 

@@ -19,6 +19,7 @@ extern "C" {
 
 #include "app_config.h"
 #include "command_request_handler.h"
+#include "pico_helper.h"
 #include "pico_logger.h"
 
 static const uint8_t *HTTP_BODY = nullptr;
@@ -135,7 +136,7 @@ bool CommandRequestHandler::onRequestReceived(HTTPHeader& header)
             const char *host = header.getHeaderValue("Host");
             const char *origin_host = (origin != nullptr) ? strstr(origin, "://") : nullptr;
 
-            if ((origin != nullptr) && ((host == nullptr) || (origin_host == nullptr) || (strcasecmp(origin_host + 3, host) != 0)))
+            if (PicoHelper::is_domain(host) || ((origin != nullptr) && ((origin_host == nullptr) || (strcasecmp(origin_host + 3, host) != 0))))
             {
                 trace("CommandRequestHandler::onRequestReceived: this=%p, websocket refused, origin[%s] host[%s]", this, origin, safestr(host));
 

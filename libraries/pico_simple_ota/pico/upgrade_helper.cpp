@@ -217,9 +217,9 @@ bool UpgradeHelper::onPlaintext(uint8_t *data, size_t len)
             m_index = 0;
             
             UF2_Block *block = (UF2_Block *)&m_buffer[0];
-            if (block->magicEnd != UF2_MAGIC_END)
+            if ((block->magicStart0 != UF2_MAGIC_START0) || (block->magicStart1 != UF2_MAGIC_START1) || (block->magicEnd != UF2_MAGIC_END))
             {
-                trace("UpgradeHelper::storeData: this=%p targetAddr[0x%x] flags[0x%x] payloadSize[%d] blockNo[%d] numBlocks[%d] magicEnd[0x%x] bad magic.\n", this, block->targetAddr, block->flags, block->payloadSize, block->blockNo, block->numBlocks, block->magicEnd);
+                trace("UpgradeHelper::storeData: this=%p targetAddr[0x%x] flags[0x%x] payloadSize[%d] blockNo[%d] numBlocks[%d] magicStart0[0x%x] magicStart1[0x%x] magicEnd[0x%x] bad magic.\n", this, block->targetAddr, block->flags, block->payloadSize, block->blockNo, block->numBlocks, block->magicStart0, block->magicStart1, block->magicEnd);
                 return false;
             }
 
@@ -260,6 +260,12 @@ bool UpgradeHelper::onPlaintext(uint8_t *data, size_t len)
             if ((block->payloadSize % 256) != 0)
             {
                 trace("UpgradeHelper::storeData: this=%p targetAddr[0x%x] flags[0x%x] payloadSize[%d] blockNo[%d] numBlocks[%d] magicEnd[0x%x] payloadSize must be 256 byte aligned.\n", this, block->targetAddr, block->flags, block->payloadSize, block->blockNo, block->numBlocks, block->magicEnd);
+                return false;
+            }
+
+            if ((block->payloadSize == 0) || (block->payloadSize > sizeof(block->data)) || ((block->targetAddr - FLASH_BUFFER_OFFSET) + block->payloadSize > MAX_BINARY_SIZE))
+            {
+                trace("UpgradeHelper::storeData: this=%p targetAddr[0x%x] flags[0x%x] payloadSize[%d] blockNo[%d] numBlocks[%d] magicEnd[0x%x] payloadSize out of bounds, max[%d].\n", this, block->targetAddr, block->flags, block->payloadSize, block->blockNo, block->numBlocks, block->magicEnd, (int)sizeof(block->data));
                 return false;
             }
 

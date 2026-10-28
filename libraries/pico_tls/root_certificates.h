@@ -31,4 +31,7 @@ class RootCertificates
 public:
     static int find(void *context, const mbedtls_x509_crt *child, mbedtls_x509_crt **candidates);
     static int check(void *context, mbedtls_x509_crt *crt, int depth, uint32_t *flags);
+
+private:
+    static bool expired(const mbedtls_x509_crt *crt);
 };

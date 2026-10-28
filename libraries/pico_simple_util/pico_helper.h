@@ -23,6 +23,8 @@ public:
     // Writes count bytes as space separated hex ("0A FF 01") into out, as many as fit, always terminated.
     static void hex_into(char *out, size_t size, const uint8_t *data, uint32_t count);
 
+    static bool is_domain(const char *host);
+
 private:
     static int hex_value(char c);
 };
