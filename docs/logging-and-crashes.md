@@ -77,6 +77,23 @@ Use the command provided above to get call stack resolved:
 0x1002bd14: HTTPSession::on_recv(...) at http_session.cpp:81
 ```
 
+## Core dumps
+
+- crashes will write an ELF dump to OTA Staging slot that will be reported later over MQTT
+- it stays there until cleared, so a crash loop won't kill flash, an upgrade will clear it
+- This is controlled via mqtt commands - list-coredumps / coredump / clear-coredump
+- Management page automatically decrypts, stores and matches with build so debugging is easy
+- Can open with GDB that has ARM support as usual 
+
+Without network, over USB you can do these:
+
+```bash
+picotool save -r 0x100CE000 0x10111000 my_app.core    # pico_w  (RP2040, 264 KB RAM)
+picotool save -r 0x10100000 0x10183000 my_app.core    # pico2_w (RP2350, 520 KB RAM)
+```
+
+That copy is not encrypted, and holds the Wi-Fi, broker and log secrets, so careful who you share it with
+
 ## Restart reasons
 
 Every boot logs a reason for the last restart:

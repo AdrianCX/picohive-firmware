@@ -52,6 +52,9 @@ public:
     static const uint32_t MAX_PACKET = 1472;
     static const uint32_t MAX_TEXT = MAX_PACKET - HEADER_SIZE - 4 - TAG_SIZE;
 
+    static const uint8_t VERSION_LOG = 1;
+    static const uint8_t VERSION_CORE_DUMP = 2;
+
     static LogEncryption& instance();
 
     // 32 hex characters for AES-128, 64 for AES-256, empty turns encryption off.
@@ -65,6 +68,8 @@ public:
     // Where the line goes in the packet, MAX_TEXT characters and a NUL.
     char *text() { return (char *)&m_packet[HEADER_SIZE + 4]; }
     uint32_t seal_text(uint32_t ip, uint32_t len);
+
+    uint32_t seal_packet(uint8_t *packet, uint8_t version, uint32_t word, uint32_t len);
 
 private:
     LogEncryption();

@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include "core_dump.h"
 
 #if __STDC_VERSION__ < 199901L
     #error "must be C99 or higher. try to add '-std=c99' to compile parameters"
@@ -627,6 +628,8 @@ void cm_backtrace_fault(uint32_t fault_handler_lr, uint32_t fault_handler_sp) {
     CMB_ASSERT(init_ok);
     /* only call once */
     CMB_ASSERT(!on_fault);
+
+    core_dump_save_fault(fault_handler_lr, fault_handler_sp, RESTART_FAULT);
 
     on_fault = true;
 

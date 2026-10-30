@@ -71,6 +71,16 @@ uint32_t LogEncryption::seal(uint32_t ip, const char *text, uint32_t len)
 
 uint32_t LogEncryption::seal_text(uint32_t ip, uint32_t len)
 {
+    if (len > MAX_TEXT)
+    {
+        len = MAX_TEXT;
+    }
+
+    return seal_packet(m_packet, VERSION_LOG, ip, len);
+}
+
+uint32_t LogEncryption::seal_packet(uint8_t *packet, uint8_t version, uint32_t word, uint32_t len)
+{
     if (!m_enabled)
     {
         return 0;
@@ -85,27 +95,22 @@ uint32_t LogEncryption::seal_text(uint32_t ip, uint32_t len)
         m_sequence = 0;
     }
 
-    if (len > MAX_TEXT)
-    {
-        len = MAX_TEXT;
-    }
-
     uint32_t seq = m_sequence++;
-    m_packet[0] = 1;
-    memcpy(&m_packet[1], m_device_id, 16);
-    memcpy(&m_packet[17], m_boot_id, 8);
-    m_packet[25] = seq >> 24;
-    m_packet[26] = seq >> 16;
-    m_packet[27] = seq >> 8;
-    m_packet[28] = seq;
+    packet[0] = version;
+    memcpy(&packet[1], m_device_id, 16);
+    memcpy(&packet[17], m_boot_id, 8);
+    packet[25] = seq >> 24;
+    packet[26] = seq >> 16;
+    packet[27] = seq >> 8;
+    packet[28] = seq;
 
     // encrypted in place
-    uint8_t *body = &m_packet[HEADER_SIZE];
-    memcpy(body, &ip, 4);
+    uint8_t *body = &packet[HEADER_SIZE];
+    memcpy(body, &word, 4);
 
     int ret = mbedtls_gcm_crypt_and_tag(&m_gcm, MBEDTLS_GCM_ENCRYPT, 4 + len,
-                                        &m_packet[17], 12,
-                                        m_packet, HEADER_SIZE,
+                                        &packet[17], 12,
+                                        packet, HEADER_SIZE,
                                         body, body,
                                         TAG_SIZE, &body[4 + len]);
     if (ret != 0)

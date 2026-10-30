@@ -26,6 +26,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "pico_logger.h"
 #include "log_encryption.h"
+#include "core_dump.h"
 #include "cm_backtrace/cm_backtrace.h"
 #include "os_fs.h"
 
@@ -139,6 +140,8 @@ static void watchdog_tick(void) {
         watchdog_update();
         return;
     }
+
+    core_dump_save_here(RESTART_WATCHDOG);
 
     // save the callstack
     uint32_t sp = cmb_get_sp();
@@ -420,6 +423,8 @@ void trace_bytes(const uint8_t *buffer, uint32_t size)
 
 void fail(const char *format, ...)
 {
+    core_dump_save_here(RESTART_FAIL);
+
     uint32_t sp = cmb_get_sp();
     uint32_t call_stack_buf[CMB_CALL_STACK_MAX_DEPTH] = {0};
     uint32_t cur_depth = cm_backtrace_call_stack(call_stack_buf, CMB_CALL_STACK_MAX_DEPTH, sp);
