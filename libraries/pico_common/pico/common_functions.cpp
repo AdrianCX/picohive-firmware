@@ -32,6 +32,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #include "dnsserver/dnsserver.h"
 
 #include "command_mqtt_manager.h"
+#include "mcp_server.h"
 
 // The linker checks the firmware fits its slot (build_id.ld).
 #define PICO_OS_STR_(x) #x
@@ -183,6 +184,8 @@ int main()
         {
             mqtt_manager->update(now_us);
         }
+
+        McpServer::get().update(now_us);
         
         app.on_update(now_us);
 

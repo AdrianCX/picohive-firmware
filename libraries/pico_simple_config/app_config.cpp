@@ -114,10 +114,12 @@ void apply_config(const JsonView& json)
     }
     json.get_string("$.log.key", config.log_key, sizeof(config.log_key));
 
+    json.get_bool("$.mcp.enabled", config.mcp_enabled);
+
     debug_config = DebugConfig();
     json.get_uint("$.debug.log_size", debug_config.offline_log_size);
 
-    trace("config: ssid=%s auth=%u country=%s web_user=%s host=%s user=%s tls=%d port=%u logport=%u offline_log=%u", config.wifi_ssid, (unsigned int)config.wifi_auth, config.wifi_country, config.web_user, config.mqtt_host, config.mqtt_user, config.mqtt_tls, config.mqtt_port, config.logging_port, (unsigned int)debug_config.offline_log_size);
+    trace("config: ssid=%s auth=%u country=%s web_user=%s host=%s user=%s tls=%d port=%u logport=%u offline_log=%u mcp=%d", config.wifi_ssid, (unsigned int)config.wifi_auth, config.wifi_country, config.web_user, config.mqtt_host, config.mqtt_user, config.mqtt_tls, config.mqtt_port, config.logging_port, (unsigned int)debug_config.offline_log_size, config.mcp_enabled);
 
     apply_logging_config();
 }

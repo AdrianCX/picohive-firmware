@@ -24,6 +24,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #include "config_store.h"
 
 #include "command_mqtt_manager.h"
+#include "mcp_server.h"
 
 AppConfig app = {};
 CommandMqttManager *mqtt_manager = NULL;
@@ -129,6 +130,8 @@ static int run(void *)
         {
             mqtt_manager->update(now_us);
         }
+
+        McpServer::get().update(now_us);
 
         app.on_update(now_us);
     }

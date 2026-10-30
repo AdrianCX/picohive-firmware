@@ -13,6 +13,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #include <string.h>
 
 #include "ai_log.h"
+#include "ai_tools.h"
 #include "app_config.h"
 #include "memory_stats.h"
 #include "openai_agent.h"
@@ -30,30 +31,9 @@ static const char *BASE_INSTRUCTIONS =
 
 static const uint64_t DELIVER_TIMEOUT_US = 120000000ULL;
 
-bool AgentCommandContext::send_data(std::string_view topic, const uint8_t *data, uint32_t len)
+void AgentCommandContext::take(const char *text, uint32_t len)
 {
-    if ((written > 0) && (left > 0))
-    {
-        agent->append_escaped("\n", 1);
-        --left;
-    }
-
-    return write_chunk(data, len);
-}
-
-bool AgentCommandContext::open_stream(std::string_view topic, uint32_t total_bytes)
-{
-    return true;
-}
-
-bool AgentCommandContext::write_chunk(const uint8_t *data, uint32_t len)
-{
-    uint32_t take = (len < left) ? len : left;
-
-    agent->append_escaped((const char *)data, take);
-    left -= take;
-    written += take;
-    return true;
+    agent->append_escaped(text, len);
 }
 
 OpenAIAgent& OpenAIAgent::get()
@@ -148,35 +128,6 @@ void OpenAIAgent::set_answer(const char *format, ...)
     va_end(again);
 }
 
-bool OpenAIAgent::is_tool(const Command& command, const char *name) const
-{
-    uint32_t i = 0;
-
-    for (; (i < command.name.size()) && (i < 64); ++i)
-    {
-        char c = command.name[i];
-        bool kept = ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) || ((c >= '0') && (c <= '9')) || (c == '-');
-
-        if (name[i] != (kept ? c : '_'))
-        {
-            return false;
-        }
-    }
-
-    return name[i] == 0;
-}
-
-void OpenAIAgent::run_command(std::span<const Command> table, uint32_t limit)
-{
-    CommandSlot slots[1];
-    CommandDispatcher dispatcher(table, m_command, slots);
-
-    m_command.left = limit;
-    m_command.written = 0;
-
-    dispatcher.dispatch_header(std::string_view(m_topic), 0);
-}
-
 void OpenAIAgent::begin_request()
 {
     const char *model = OpenAIManager::get().get_config().model;
@@ -209,16 +160,10 @@ void OpenAIAgent::begin_request()
 
         for (const Command& command : AiCommandSet::all())
         {
-            uint32_t i = 0;
-
-            for (; (i < command.name.size()) && (i < 64); ++i)
+            if (AiTools::tool_name(command, name, sizeof(name)) == 0)
             {
-                char c = command.name[i];
-                bool kept = ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) || ((c >= '0') && (c <= '9')) || (c == '-');
-                name[i] = kept ? c : '_';
+                continue;
             }
-
-            name[i] = 0;
 
             uint32_t length = (command.help.size() < OPENAI_TOOL_DESCRIPTION_MAX) ? command.help.size() : OPENAI_TOOL_DESCRIPTION_MAX;
             memcpy(help, command.help.data(), length);
@@ -335,10 +280,10 @@ void OpenAIAgent::first_request()
     append("{\"role\":\"developer\",\"content\":\"", 31);
     append_escaped(BASE_INSTRUCTIONS, strlen(BASE_INSTRUCTIONS));
 
-    if (m_app_instructions != NULL)
+    if (AiTools::instructions() != NULL)
     {
         append_escaped(" ", 1);
-        append_escaped(m_app_instructions, strlen(m_app_instructions));
+        append_escaped(AiTools::instructions(), strlen(AiTools::instructions()));
     }
 
     if (!m_instructions.empty())
@@ -349,28 +294,22 @@ void OpenAIAgent::first_request()
 
     if (m_tools_enabled && (AiContextCommandSet::size() > 0))
     {
-        static const char *NOW = "\n\nAs things are right now:";
+        static const char *NOW = "\n\nAs things are right now:\n\n";
         append_escaped(NOW, strlen(NOW));
+        m_command.run_each(AiContextCommandSet::all(), OPENAI_AGENT_CONTEXT_BYTES);
 
         char names[96] = {};
         int at = 0;
 
         for (const Command& command : AiContextCommandSet::all())
         {
-            snprintf(m_topic, sizeof(m_topic), "%.*s", (int)command.name.size(), command.name.data());
-            append_escaped("\n\n", 2);
-            append_escaped(m_topic, strlen(m_topic));
-            append_escaped(":\n", 2);
-            run_command(AiContextCommandSet::all(), OPENAI_AGENT_CONTEXT_BYTES);
-
             if (at < (int)sizeof(names))
             {
-                at += snprintf(&names[at], sizeof(names) - at, "%s%s", (at > 0) ? "," : "", m_topic);
+                at += snprintf(&names[at], sizeof(names) - at, "%s%.*s", (at > 0) ? "," : "", (int)command.name.size(), command.name.data());
             }
         }
 
         AiLog::get().add("context %s", names);
-        m_topic[0] = 0;
     }
 
     append("\"},{\"role\":\"user\",\"content\":\"", 29);
@@ -576,22 +515,11 @@ void OpenAIAgent::answered(bool ok, OpenAIResponseReader& answer)
     {
         trace("openai agent: round %u answered: %.300s", (unsigned int)m_rounds, m_answer.c_str());
 
-        uint32_t steps = 0;
-        uint32_t total_ms = 0;
-        char why[128];
+        char started[160];
 
-        if (AiSequence::get().load(m_answer.c_str(), steps, total_ms, why, sizeof(why)))
+        if (AiSequence::get().start(m_answer.c_str(), started, sizeof(started)))
         {
-            if (steps > 0)
-            {
-                set_answer("running %u steps, about %u.%u s", (unsigned int)steps,
-                           (unsigned int)(total_ms / 1000), (unsigned int)((total_ms % 1000) / 100));
-                AiLog::get().add("plan %u %u", (unsigned int)steps, (unsigned int)total_ms);
-            }
-            else
-            {
-                set_answer("nothing to do: %s", (why[0] != 0) ? why : "no steps");
-            }
+            set_answer("%s", started);
         }
 
         finish(m_answer.c_str());
@@ -627,25 +555,7 @@ void OpenAIAgent::answered(bool ok, OpenAIResponseReader& answer)
 void OpenAIAgent::run_call()
 {
     uint32_t i = m_next_call++;
-    const char *args = m_call[i].args;
-
-    while (*args == '/')
-    {
-        ++args;
-    }
-
-    const Command *command = NULL;
-
-    if (m_tools_enabled)
-    {
-        for (const Command& candidate : AiCommandSet::all())
-        {
-            if (is_tool(candidate, m_call[i].name))
-            {
-                command = &candidate;
-            }
-        }
-    }
+    const Command *command = m_tools_enabled ? AiTools::find_tool(m_call[i].name) : NULL;
 
     if (i > 0)
     {
@@ -657,29 +567,22 @@ void OpenAIAgent::run_call()
     append("\",\"output\":\"", 12);
     uint32_t answer_at = m_body.size();
 
-    if ((command != NULL) && !strncmp(args, command->name.data(), command->name.size()) && (args[command->name.size()] == '/'))
+    if ((command == NULL) || !AiTools::make_topic(*command, m_call[i].args, m_topic, sizeof(m_topic)))
     {
-        args += command->name.size() + 1;
-    }
-
-    if ((command == NULL) || (strlen(args) >= MAX_COMMAND_ARGS))
-    {
-        static const char *REFUSED = "no such tool, or its args are too long";
-        append_escaped(REFUSED, strlen(REFUSED));
+        append_escaped(AiTools::REFUSED, strlen(AiTools::REFUSED));
         trace("openai agent: call %u is %s(%s): refused, %s", (unsigned int)(m_calls_run + 1), m_call[i].name, m_call[i].args,
               (command == NULL) ? "no such tool" : "args too long");
         AiLog::get().add("call %s refused", m_call[i].name);
+        m_topic[0] = 0;
     }
     else
     {
-        snprintf(m_topic, sizeof(m_topic), "%.*s%s%s", (int)command->name.size(), command->name.data(), (args[0] != 0) ? "/" : "", args);
         trace("openai agent: call %u is %s(%s), running %s", (unsigned int)(m_calls_run + 1), m_call[i].name, m_call[i].args, m_topic);
-        run_command(AiCommandSet::all(), OPENAI_AGENT_REPLY_BYTES);
+        m_command.run(AiCommandSet::all(), m_topic, OPENAI_AGENT_REPLY_BYTES);
 
         if (m_command.written == 0)
         {
-            static const char *SILENT = "done, no answer";
-            append_escaped(SILENT, strlen(SILENT));
+            append_escaped(AiTools::NO_ANSWER, strlen(AiTools::NO_ANSWER));
         }
 
         AiLog::get().add("call %s %u", m_topic, (unsigned int)m_command.written);
@@ -689,7 +592,7 @@ void OpenAIAgent::run_call()
 
     char shown[300];
     uint32_t shown_len = m_body.copy_out(answer_at, shown, sizeof(shown));
-    trace("openai agent: call %u %s(%s): %.*s", (unsigned int)m_calls_run, m_call[i].name, args, (int)shown_len, shown);
+    trace("openai agent: call %u %s(%s): %.*s", (unsigned int)m_calls_run, m_call[i].name, m_call[i].args, (int)shown_len, shown);
 
     append("\"}", 2);
 }

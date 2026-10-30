@@ -178,6 +178,7 @@ public:
 
     bool set_torque(bool on);
     bool torque_on() const { return m_torque_on; }
+    bool goal(uint16_t& position) const { position = m_goal; return m_has_goal && m_torque_on; }
     uint8_t default_acceleration() const { return m_acceleration; }
 
     bool set_torque_limit(uint16_t limit);
@@ -226,6 +227,8 @@ private:
     uint8_t m_temperature = 0;
 
     bool m_torque_on = false;
+    bool m_has_goal = false;
+    uint16_t m_goal = 0;
     bool m_calibrating = false;
     ST3215Range m_range;
 };

@@ -51,6 +51,20 @@ CommandDispatcher::~CommandDispatcher()
     abort("the dispatcher is going away");
 }
 
+bool CommandDispatcher::run_once(std::span<const Command> table, CommandContext& context, std::string_view topic,
+                                 std::string_view body)
+{
+    CommandSlot slots[1];
+    CommandDispatcher dispatcher(table, context, slots);
+
+    if (!dispatcher.dispatch_header(topic, body.size()))
+    {
+        return false;
+    }
+
+    return body.empty() || dispatcher.dispatch_data((const uint8_t *)body.data(), body.size(), true);
+}
+
 bool CommandDispatcher::idle() const
 {
     for (const CommandSlot& slot : m_slots)

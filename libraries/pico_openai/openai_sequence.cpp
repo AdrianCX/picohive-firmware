@@ -10,6 +10,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #include <stdio.h>
 #include <string.h>
 
+#include "ai_tools.h"
 #include "command_dispatcher.h"
 #include "ai_log.h"
 #include "command_registration.h"
@@ -62,6 +63,8 @@ bool AiSequence::load(const char *answer, uint32_t& steps, uint32_t& total_ms, c
 
     stop();
 
+    AiTools::set_busy([]() { return AiSequence::get().busy(); });
+
     uint32_t room = (plan.length() < AI_SEQUENCE_BYTES) ? plan.length() : AI_SEQUENCE_BYTES;
     m_commands = SharedBuffer(room);
 
@@ -87,6 +90,9 @@ bool AiSequence::load(const char *answer, uint32_t& steps, uint32_t& total_ms, c
         }
 
         step.get_int("$.ms", wait);
+
+        int64_t wait_done = 1;
+        step.get_int("$.w", wait_done);
         wait = (wait < 0) ? 0 : ((wait > AI_SEQUENCE_MAX_WAIT_MS) ? AI_SEQUENCE_MAX_WAIT_MS : wait);
 
         char *command = &commands[used];
@@ -95,6 +101,7 @@ bool AiSequence::load(const char *answer, uint32_t& steps, uint32_t& total_ms, c
 
         m_at[m_count] = (uint16_t)used;
         m_wait_ms[m_count] = (uint16_t)wait;
+        m_wait_done[m_count] = (wait_done != 0);
         total_ms += (uint32_t)wait;
         used += strlen(command) + 1;
         ++m_count;
@@ -112,6 +119,36 @@ bool AiSequence::load(const char *answer, uint32_t& steps, uint32_t& total_ms, c
     m_next_us = m_now_us;
 
     trace("ai sequence: %u steps, about %u ms%s%s", (unsigned int)m_count, (unsigned int)total_ms, (why[0] != 0) ? ": " : "", why);
+    return true;
+}
+
+bool AiSequence::start(const char *text, char *out, uint32_t size)
+{
+    uint32_t steps = 0;
+    uint32_t total_ms = 0;
+    char why[128];
+
+    if (!load(text, steps, total_ms, why, sizeof(why)))
+    {
+        return false;
+    }
+
+    if (steps == 0)
+    {
+        snprintf(out, size, "nothing to do: %s", (why[0] != 0) ? why : "no steps");
+        return true;
+    }
+
+    if (total_ms == 0)
+    {
+        snprintf(out, size, "running %u steps", (unsigned int)steps);
+    }
+    else
+    {
+        snprintf(out, size, "running %u steps, about %u.%u s", (unsigned int)steps,
+                 (unsigned int)(total_ms / 1000), (unsigned int)((total_ms % 1000) / 100));
+    }
+    AiLog::get().add("plan %u %u", (unsigned int)steps, (unsigned int)total_ms);
     return true;
 }
 
@@ -137,11 +174,11 @@ void AiSequence::update(uint64_t now_us)
         return;
     }
 
-    if ((m_ready != NULL) && (m_index > 0))
+    if (AiTools::has_ready() && (m_index > 0) && m_wait_done[m_index - 1])
     {
         uint64_t since = now_us - m_step_us;
 
-        if ((since < AI_SEQUENCE_SETTLE_US) || (!m_ready() && (since < AI_SEQUENCE_READY_TIMEOUT_US)))
+        if (!AiTools::done_after(since, AI_SEQUENCE_READY_TIMEOUT_US))
         {
             return;
         }
@@ -169,11 +206,9 @@ void AiSequence::run_step()
     else
     {
         trace("ai sequence: step %u of %u: %s, then done%s and %u ms", (unsigned int)(m_index + 1), (unsigned int)m_count, command,
-              (m_ready != NULL) ? " moving" : "", (unsigned int)m_wait_ms[m_index]);
+              AiTools::has_ready() ? " moving" : "", (unsigned int)m_wait_ms[m_index]);
 
-        CommandSlot slots[1];
-        CommandDispatcher dispatcher(AiCommandSet::all(), m_command, slots);
-        dispatcher.dispatch_header(std::string_view(command), 0);
+        CommandDispatcher::run_once(AiCommandSet::all(), m_command, std::string_view(command));
     }
 
     m_step_us = m_now_us;
@@ -186,6 +221,11 @@ void AiSequence::run_step()
         AiLog::get().add("plandone");
         m_commands = SharedBuffer();
     }
+}
+
+bool AiSequence::busy() const
+{
+    return (m_count > 0) && (running() || !AiTools::done_after(m_now_us - m_step_us, AI_SEQUENCE_READY_TIMEOUT_US));
 }
 
 uint32_t AiSequence::status(char *out, uint32_t size) const

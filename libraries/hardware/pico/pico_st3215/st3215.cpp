@@ -218,7 +218,15 @@ bool ST3215::move_to(uint16_t position, uint16_t speed, uint8_t acceleration)
         0, 0,
         (uint8_t)(speed & 0xFF), (uint8_t)(speed >> 8),
     };
-    return m_bus.write(m_id, ST3215_REG_ACCELERATION, data, sizeof(data));
+
+    if (!m_bus.write(m_id, ST3215_REG_ACCELERATION, data, sizeof(data)))
+    {
+        return false;
+    }
+
+    m_goal = goal;
+    m_has_goal = true;
+    return true;
 }
 
 bool ST3215::move_to_degrees(float degrees)

@@ -144,6 +144,32 @@ bool AiStop::on_header(CommandContext& ctx)
     return ctx.reply("stopped");
 }
 
+bool Plan::on_payload(CommandContext& ctx, std::string_view body)
+{
+    if (ctx.args == "stop")
+    {
+        bool playing = AiSequence::get().running();
+        AiSequence::get().stop();
+        return ctx.reply(playing ? "stopped" : "no plan running");
+    }
+
+    SharedBuffer plan((uint32_t)body.size());
+
+    if (!plan || !plan.append(body))
+    {
+        return ctx.reply("no memory for the plan");
+    }
+
+    char started[160];
+
+    if (!AiSequence::get().start(plan.c_str(), started, sizeof(started)))
+    {
+        return ctx.reply("not a plan: the body is {\"steps\":[{\"do\":\"<command>\",\"ms\":<n>}, ...]}");
+    }
+
+    return ctx.reply(started);
+}
+
 bool AiNew::on_header(CommandContext& ctx)
 {
     return ctx.reply(OpenAIAgent::get().forget() ? "the next request starts a new conversation" : "busy - ai/stop first");
@@ -163,6 +189,10 @@ TELEGRAM_COMMAND(AiNew);
 
 MQTT_COMMAND(AiEvents);
 WS_COMMAND(AiEvents);
+
+MQTT_COMMAND(Plan);
+WS_COMMAND(Plan);
+AI_COMMAND(Plan);
 
 MQTT_COMMAND(AiStop);
 WS_COMMAND(AiStop);

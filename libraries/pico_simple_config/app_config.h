@@ -37,6 +37,7 @@ struct Config
     char web_user[MAX_CONFIG_STR] = {};
     char web_pass[MAX_CONFIG_STR] = {};
     char log_key[MAX_CONFIG_STR + 1] = {};
+    bool mcp_enabled = false;
 };
 
 struct DebugConfig

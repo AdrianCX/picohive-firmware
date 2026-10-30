@@ -12,6 +12,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #include "command_dispatcher.h"
 #include "command_registration.h"
 #include "http_session.h"
+#include "mcp_server.h"
 #include "ws_frame_reader.h"
 
 class CommandRequestHandler;
@@ -35,7 +36,9 @@ private:
     ReplyBuffer m_waiting[COMMAND_REPLY_QUEUE_LENGTH];
 };
 
-class CommandRequestHandler : public HTTPSession
+class CommandRequestHandler
+    : public HTTPSession
+    , public McpWaiter
 {
 public:
     static void set_config(const uint8_t *http_body, unsigned int body_len);
@@ -50,15 +53,37 @@ public:
     bool send_raw(const uint8_t *data, uint32_t len);
     uint32_t link_space();
 
+    void mcp_done() override;
+
 private:
     bool onRequestReceived(HTTPHeader& header) override;
+    bool onHttpData(u8_t *data, size_t len) override;
     bool onWebSocketData(u8_t *data, size_t len) override;
     bool on_sent(u16_t len) override;
 
-    bool sendIndexHtmlBody();
-    bool isAuthorized(HTTPHeader& header);
+    bool onMcpRequest(HTTPHeader& header);
+    bool answerMcp();
+    bool sendMcpAnswer(const char *status);
 
-    unsigned int m_index = 0;
+    bool sendEmptyReply(const char *status, const char *extra_headers = "");
+    bool sendReply(const char *status, const char *headers, const uint8_t *body, uint32_t body_len);
+    bool sendBody();
+    bool isAuthorized(HTTPHeader& header);
+    bool isSameOrigin(HTTPHeader& header);
+
+    const uint8_t *m_body = nullptr;
+    uint32_t m_body_len = 0;
+    uint32_t m_index = 0;
+
+    struct McpState
+    {
+        SharedBuffer request;
+        uint32_t expected = 0;
+        SharedBuffer answer;
+        bool waiting = false;
+    };
+
+    McpState *m_mcp = nullptr;
 
     struct WebSocketState
     {

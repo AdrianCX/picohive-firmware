@@ -11,7 +11,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <stdint.h>
 
-#include "command_dispatcher.h"
+#include "capture_command_context.h"
 #include "command_registration.h"
 #include "openai_chat.h"
 #include "openai_manager.h"
@@ -49,19 +49,13 @@ typedef bool (*OpenAIAgentDone)(const char *text, void *context);
 
 class OpenAIAgent;
 
-class AgentCommandContext : public CommandContext
+class AgentCommandContext : public CaptureCommandContext
 {
 public:
     OpenAIAgent *agent = nullptr;
-    uint32_t left = 0;
-    uint32_t written = 0;
-
-    uint32_t send_space() override { return UINT32_MAX; }
 
 protected:
-    bool send_data(std::string_view topic, const uint8_t *data, uint32_t len) override;
-    bool open_stream(std::string_view topic, uint32_t total_bytes) override;
-    bool write_chunk(const uint8_t *data, uint32_t len) override;
+    void take(const char *text, uint32_t len) override;
 };
 
 #define OPENAI_CONVERSATION_FILE "openai_conversation.bin"
@@ -70,8 +64,6 @@ class OpenAIAgent
 {
 public:
     static OpenAIAgent& get();
-
-    void set_app_instructions(const char *instructions) { m_app_instructions = instructions; }
 
     void load_config(const JsonView& config);
 
@@ -108,9 +100,7 @@ private:
     void first_request();
     void begin_request();
     void run_call();
-    void run_command(std::span<const Command> table, uint32_t limit);
     void finish(const char *text);
-    bool is_tool(const Command& command, const char *name) const;
     bool room_for(uint32_t len);
     void set_answer(const char *format, ...) __attribute__((format(printf, 2, 3)));
 
@@ -120,7 +110,6 @@ private:
     void answered(bool ok, OpenAIResponseReader& answer);
 
     SharedBuffer m_instructions;
-    const char *m_app_instructions = NULL;
     bool m_tools_enabled = true;
     const char *m_why = "";
 

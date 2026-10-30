@@ -10,6 +10,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #pragma once
 
 #include "command_registration.h"
+#include "openai_sequence.h"
 
 struct Ai
 {
@@ -44,6 +45,18 @@ struct AiEvents
     static constexpr std::string_view help = "ai/events/<after> - what the ai request did, line by line, after line <after>";
 
     bool on_header(CommandContext& ctx);
+};
+
+struct Plan
+{
+    static constexpr std::string_view name = "plan";
+    static constexpr std::string_view help = "plan, body {\"steps\":[{\"do\":\"<command>\",\"ms\":<at least>}]} - run in order; plan/stop";
+    static constexpr std::string_view ai_help = "plan, body {\"steps\":[{\"do\":\"<cmd>\",\"ms\":0}]}; plan/stop";
+
+    static constexpr Payload payload = Payload::Buffered;
+    static constexpr uint32_t max_bytes = 2 * AI_SEQUENCE_BYTES;
+
+    bool on_payload(CommandContext& ctx, std::string_view body);
 };
 
 struct AiStop

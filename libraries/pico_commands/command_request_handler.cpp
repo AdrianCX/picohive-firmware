@@ -8,11 +8,11 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 
 #include "mbedtls/base64.h"
-// No C++ guard in this header.
 extern "C" {
 #include "mbedtls/constant_time.h"
 }
@@ -51,7 +51,6 @@ CommandRequestHandler::WebSocketState::WebSocketState(CommandRequestHandler *han
 
 CommandRequestHandler::CommandRequestHandler(void *arg, bool tls)
     : HTTPSession(arg, tls)
-    , m_index(HTTP_BODY_LEN)
 {
     trace("CommandRequestHandler::CommandRequestHandler: this=%p, arg=%p", this, arg);
 
@@ -68,6 +67,16 @@ CommandRequestHandler::~CommandRequestHandler()
     {
         m_ws->dispatcher.abort("the websocket closed");
         delete m_ws;
+    }
+
+    if (m_mcp != nullptr)
+    {
+        if (m_mcp->waiting)
+        {
+            McpServer::get().cancel(this);
+        }
+
+        delete m_mcp;
     }
 }
 
@@ -112,36 +121,43 @@ bool CommandRequestHandler::isAuthorized(HTTPHeader& header)
     return ok;
 }
 
+bool CommandRequestHandler::isSameOrigin(HTTPHeader& header)
+{
+    const char *origin = header.getHeaderValue("Origin");
+    const char *host = header.getHeaderValue("Host");
+    const char *origin_host = (origin != nullptr) ? strstr(origin, "://") : nullptr;
+
+    if (PicoHelper::is_domain(host) || ((origin != nullptr) && ((origin_host == nullptr) || (strcasecmp(origin_host + 3, host) != 0))))
+    {
+        trace("CommandRequestHandler::isSameOrigin: this=%p, refused, origin[%s] host[%s]", this, origin, safestr(host));
+        return false;
+    }
+
+    return true;
+}
+
 bool CommandRequestHandler::onRequestReceived(HTTPHeader& header)
 {
     if (AUTH_REQUIRED)
     {
         if (!isAuthorized(header))
         {
-            const char *unauthorized = "HTTP/1.1 401 Unauthorized\r\n"
-                "WWW-Authenticate: Basic realm=\"PicoServer\"\r\n"
-                "Connection: close\r\n"
-                "Content-Length: 0\r\n"
-                "\r\n";
-
-            return sendHttpReplyRaw(unauthorized, strlen(unauthorized), true);
+            return sendEmptyReply("401 Unauthorized", "WWW-Authenticate: Basic realm=\"PicoServer\"\r\n");
         }
+    }
+
+    if (strcmp(header.getPath(), MCP_PATH) == 0)
+    {
+        return onMcpRequest(header);
     }
 
     if (strcmp(header.getCommand(), "GET") == 0)
     {
         if (strcmp(header.getPath(), "/websocket") == 0)
         {
-            const char *origin = header.getHeaderValue("Origin");
-            const char *host = header.getHeaderValue("Host");
-            const char *origin_host = (origin != nullptr) ? strstr(origin, "://") : nullptr;
-
-            if (PicoHelper::is_domain(host) || ((origin != nullptr) && ((origin_host == nullptr) || (strcasecmp(origin_host + 3, host) != 0))))
+            if (!isSameOrigin(header))
             {
-                trace("CommandRequestHandler::onRequestReceived: this=%p, websocket refused, origin[%s] host[%s]", this, origin, safestr(host));
-
-                const char *forbidden = "HTTP/1.1 403 Forbidden\r\nConnection: close\r\nContent-Length: 0\r\n\r\n";
-                return sendHttpReplyRaw(forbidden, strlen(forbidden), true);
+                return sendEmptyReply("403 Forbidden");
             }
 
             trace("CommandRequestHandler::onRequestReceived: this=%p, acceptWebSocket.", this);
@@ -151,46 +167,170 @@ bool CommandRequestHandler::onRequestReceived(HTTPHeader& header)
 
         trace("CommandRequestHandler::onRequestReceived: this=%p, sendReply[index.html]:", this);
 
-        char reply[192];
-        int n = snprintf(reply, sizeof(reply), "HTTP/1.0 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: gzip\r\nConnection: close\r\nContent-Length: %d\r\n\r\n", HTTP_BODY_LEN);
-
-        if ((n < 0) || (n >= (int)sizeof(reply)))
-        {
-            trace("CommandRequestHandler::onRequestReceived: this=%p, buffer to small, expected[%d] got[%d]:\n", this, n, (int)sizeof(reply));
-            return false;
-        }
-
-        // body could be very large so send it buffered
-        if (sendHttpReplyRaw(reply, n, true, HTTP_BODY_LEN))
-        {
-            m_index = 0;
-            return sendIndexHtmlBody();
-        }
+        return sendReply("200 OK", "Content-Type: text/html; charset=UTF-8\r\nContent-Encoding: gzip\r\n", HTTP_BODY, HTTP_BODY_LEN);
     }
 
     return false;
 }
 
-bool CommandRequestHandler::sendIndexHtmlBody()
+bool CommandRequestHandler::sendReply(const char *status, const char *headers, const uint8_t *body, uint32_t body_len)
 {
-    if ((m_index < HTTP_BODY_LEN) && (send_buffer_size() > TCP_MSS))
+    char reply[192];
+    int n = snprintf(reply, sizeof(reply), "HTTP/1.1 %s\r\n%sConnection: close\r\nContent-Length: %u\r\n\r\n", status, headers, (unsigned int)body_len);
+
+    if ((n < 0) || (n >= (int)sizeof(reply)))
+    {
+        trace("CommandRequestHandler::sendReply: this=%p, buffer to small, expected[%d] got[%d]:\n", this, n, (int)sizeof(reply));
+        return false;
+    }
+
+    if (!sendHttpReplyRaw(reply, n, true, body_len))
+    {
+        return false;
+    }
+
+    m_body = body;
+    m_body_len = body_len;
+    m_index = 0;
+    return sendBody();
+}
+
+bool CommandRequestHandler::sendEmptyReply(const char *status, const char *extra_headers)
+{
+    return sendReply(status, extra_headers, nullptr, 0);
+}
+
+bool CommandRequestHandler::sendBody()
+{
+    if ((m_index < m_body_len) && (send_buffer_size() > TCP_MSS))
     {
         uint32_t socket_buffer_size = send_buffer_size() - TCP_MSS;
-        uint32_t remaining = HTTP_BODY_LEN - m_index;
+        uint32_t remaining = m_body_len - m_index;
         uint32_t len = (socket_buffer_size < remaining) ? socket_buffer_size : remaining;
 
         uint32_t index = m_index;
         m_index += len;
 
-        err_t err = m_session->send(&HTTP_BODY[index], len);
+        err_t err = m_session->send(&m_body[index], len);
 
         if (err != ERR_OK) {
-            trace("CommandRequestHandler::sendIndexHtmlBody: this=%p, failed sending body, err[%d]\n", this, err);
+            trace("CommandRequestHandler::sendBody: this=%p, failed sending body, err[%d]\n", this, err);
             return false;
         }
     }
 
     return true;
+}
+
+bool CommandRequestHandler::onMcpRequest(HTTPHeader& header)
+{
+    if (!get_config().mcp_enabled)
+    {
+        trace("CommandRequestHandler::onMcpRequest: this=%p, mcp is off", this);
+        return sendEmptyReply("404 Not Found");
+    }
+
+    if ((header.getHeaderValue("Origin") != nullptr) && !isSameOrigin(header))
+    {
+        return sendEmptyReply("403 Forbidden");
+    }
+
+    if (strcmp(header.getCommand(), "POST") != 0)
+    {
+        return sendEmptyReply("405 Method Not Allowed", "Allow: POST\r\n");
+    }
+
+    const char *length = header.getHeaderValue("Content-Length");
+    char *end = nullptr;
+    unsigned long expected = (length != nullptr) ? strtoul(length, &end, 10) : 0;
+
+    if ((length == nullptr) || (end == length) || (expected == 0))
+    {
+        return sendEmptyReply("411 Length Required");
+    }
+
+    if (expected > MCP_MAX_REQUEST)
+    {
+        return sendEmptyReply("413 Content Too Large");
+    }
+
+    m_mcp = new McpState();
+    m_mcp->request = SharedBuffer(expected);
+    m_mcp->expected = expected;
+
+    if (!m_mcp->request)
+    {
+        return sendEmptyReply("503 Service Unavailable");
+    }
+
+    return true;
+}
+
+bool CommandRequestHandler::onHttpData(u8_t *data, size_t len)
+{
+    if (m_mcp == nullptr)
+    {
+        return HTTPSession::onHttpData(data, len);
+    }
+
+    if (!m_mcp->request)
+    {
+        return true;
+    }
+
+    uint32_t room = m_mcp->expected - m_mcp->request.size();
+    m_mcp->request.append(data, (len < room) ? len : room);
+
+    return (m_mcp->request.size() < m_mcp->expected) || answerMcp();
+}
+
+bool CommandRequestHandler::answerMcp()
+{
+    McpOutcome outcome = McpServer::get().handle(m_mcp->request.c_str(), m_mcp->request.size(), m_mcp->answer);
+    m_mcp->request = SharedBuffer();
+
+    switch (outcome)
+    {
+        case McpOutcome::Accepted:
+            return sendEmptyReply("202 Accepted");
+
+        case McpOutcome::Bad:
+            if (!m_mcp->answer)
+            {
+                return sendEmptyReply("503 Service Unavailable");
+            }
+
+            return sendMcpAnswer("400 Bad Request");
+
+        case McpOutcome::AnswerWhenDone:
+            if (McpServer::get().wait(this))
+            {
+                m_mcp->waiting = true;
+                return true;
+            }
+
+            [[fallthrough]];
+
+        case McpOutcome::Answer:
+            break;
+    }
+
+    return sendMcpAnswer("200 OK");
+}
+
+bool CommandRequestHandler::sendMcpAnswer(const char *status)
+{
+    return sendReply(status, "Content-Type: application/json\r\n", (const uint8_t *)m_mcp->answer.c_str(), m_mcp->answer.size());
+}
+
+void CommandRequestHandler::mcp_done()
+{
+    m_mcp->waiting = false;
+
+    if (!sendMcpAnswer("200 OK"))
+    {
+        close();
+    }
 }
 
 bool CommandRequestHandler::onWebSocketData(u8_t *data, size_t len)
@@ -203,7 +343,7 @@ bool CommandRequestHandler::onWebSocketData(u8_t *data, size_t len)
 
 bool CommandRequestHandler::on_sent(u16_t len)
 {
-    return sendIndexHtmlBody() && HTTPSession::on_sent(len) && ((m_ws == nullptr) || m_ws->dispatcher.dispatch_sent());
+    return sendBody() && HTTPSession::on_sent(len) && ((m_ws == nullptr) || m_ws->dispatcher.dispatch_sent());
 }
 
 bool CommandRequestHandler::send_frame(std::string_view prefix, std::string_view topic, const uint8_t *data, uint32_t len)
@@ -238,7 +378,6 @@ uint32_t CommandRequestHandler::link_space()
 
 uint32_t WsCommandContext::message_cost(std::string_view topic, uint32_t len) const
 {
-    // send_space() already takes the frame header off what it reports.
     return len + prefix.size() + topic.size() + 1;
 }
 

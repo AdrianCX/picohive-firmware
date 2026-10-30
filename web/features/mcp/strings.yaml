@@ -1,0 +1,30 @@
+sub.mcp:
+  cartoon: MCP
+  clean: MCP
+  xeno: Conduit
+  fallout: Uplink
+cfg.mcp:
+  cartoon: Let an AI drive!
+  clean: MCP server
+  xeno: The conduit
+  fallout: Remote Operator Link
+cfg.mcpEnabled:
+  cartoon: 'Turn it on:'
+  clean: Enable MCP
+  xeno: 'Open the conduit:'
+  fallout: 'Link Active:'
+cfg.mcpUrl:
+  cartoon: 'Address:'
+  clean: Address
+  xeno: 'Where it listens:'
+  fallout: 'Endpoint:'
+cfg.mcpAdd:
+  cartoon: 'Claude Code:'
+  clean: Claude Code
+  xeno: 'To bind it:'
+  fallout: 'Operator Setup:'
+mcp.hint:
+  cartoon: 'Tick the box, save, and run that line - then Claude can move it with the same commands the AI uses! With a page login, add --header "Authorization: Basic <base64 of user:pass>".'
+  clean: 'Lets a model in Claude Code, or any MCP client, run the board''s AI commands. Takes effect on Save. With a page login, add --header "Authorization: Basic <base64 of user:pass>" to the command.'
+  xeno: 'once open, another mind may move it with the board''s own commands. if the page is sealed, add --header "Authorization: Basic <base64 of user:pass>".'
+  fallout: 'Grants an external operator command access on save. Secured terminal requires --header "Authorization: Basic <base64 of user:pass>".'

@@ -1,17 +1,20 @@
 add_library(pico_commands INTERFACE)
 
 target_sources(pico_commands INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/ai_tools.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/capture_command_context.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/command_dispatcher.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/command_table.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/command_mqtt_manager.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/command_request_handler.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/mcp_server.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/pending_clears.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ws_frame_reader.cpp
 )
 
 target_include_directories(pico_commands INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(pico_commands INTERFACE pico_http pico_tls pico_simple_mqtt pico_simple_ota pico_simple_config pico_fs pico_logger pico_simple_util)
+target_link_libraries(pico_commands INTERFACE pico_http pico_tls pico_simple_mqtt pico_simple_ota pico_simple_config pico_fs pico_logger pico_simple_util pico_mjson)
 
 set(PICO_COMMANDS_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "pico_commands location")
 

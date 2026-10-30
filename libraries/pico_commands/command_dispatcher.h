@@ -35,6 +35,9 @@ public:
     CommandDispatcher(std::span<const Command> table, CommandContext& context, std::span<CommandSlot> slots);
     ~CommandDispatcher();
 
+    static bool run_once(std::span<const Command> table, CommandContext& context, std::string_view topic,
+                         std::string_view body = std::string_view());
+
     std::span<const Command> table() const { return m_table; }
 
     bool is_streaming() const { return m_active != nullptr; }
