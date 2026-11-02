@@ -28,6 +28,20 @@
 
 ## Quick start
 
+### With Claude Code
+
+```bash
+git clone https://github.com/AdrianCX/picohive-firmware.git
+cd picohive-firmware
+claude
+> make me a new pico2_w project called thermostat
+```
+
+Claude creates and builds the project then walks you through rest of the setup\
+Open claude in the target folder and ask how to add commands/settings/deploy to device
+
+### By hand
+
 ```bash
 git clone --recursive https://github.com/AdrianCX/picohive-firmware.git os
 os/template/create_project.sh --board pico2_w thermostat ~/work/thermostat

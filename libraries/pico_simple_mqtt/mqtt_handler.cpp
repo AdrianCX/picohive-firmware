@@ -19,11 +19,13 @@ extern "C" const char *safestr(const char *value);
 
 bool MQTTSocketHandler::on_recv(uint8_t *data, size_t len)
 {
+    m_lastActivityUs = to_us_since_boot(get_absolute_time());
     return decode_data(data, len);
 }
 
 bool MQTTSocketHandler::on_sent(uint16_t len)
 {
+    m_lastActivityUs = to_us_since_boot(get_absolute_time());
     return m_upstream->on_sent(len);
 }
 
@@ -46,6 +48,7 @@ void MQTTSocketHandler::reset()
     m_recvBufferIdx = 0;
     m_state = SocketState::WAIT_PACKET;
     m_lastKeepaliveUs = to_us_since_boot(get_absolute_time());
+    m_lastActivityUs = m_lastKeepaliveUs;
     m_pendingDataLen = 0;
     m_pendingSendDataLen = 0;
 }
@@ -56,14 +59,32 @@ bool MQTTSocketHandler::update(uint64_t now_us)
     {
         uint32_t ms = (uint32_t)((now_us - m_lastKeepaliveUs)/1000LL);
         uint32_t interval = (m_keepaliveSeconds*1000);
+
+        if ((m_keepaliveSeconds != 0) && ((now_us - m_lastActivityUs) / 1000LL > interval))
+        {
+            return drop_connection("nothing received or acknowledged within the keepalive");
+        }
+
         if (ms > interval/2)
         {
             m_lastKeepaliveUs = now_us;
-            send_ping();
+
+            if (!send_ping())
+            {
+                return drop_connection("PINGREQ could not be sent");
+            }
         }
     }
     
     return true;
+}
+
+bool MQTTSocketHandler::drop_connection(const char *why)
+{
+    trace("MQTTSocketHandler::drop_connection: this=%p %s, closing to reconnect", this, why);
+
+    m_downstream->close();
+    return false;
 }
 
 

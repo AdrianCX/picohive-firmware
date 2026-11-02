@@ -118,6 +118,8 @@ private:
     static uint16_t write_string(const char* msg, uint16_t len, uint8_t* buffer, uint16_t pos);
     static uint32_t write_header(uint8_t message_type, uint32_t message_size, uint8_t *buffer, size_t buffer_size, size_t laterBytes=0);
 
+    bool drop_connection(const char *why);
+
     bool m_debug = false;
     bool m_pendingPing = false;
     uint16_t m_pendingAcks[MQTT_PENDING_ACKS] = {};
@@ -129,6 +131,7 @@ private:
 
     SocketState m_state = SocketState::WAIT_PACKET;
     uint64_t m_lastKeepaliveUs = 0;
+    uint64_t m_lastActivityUs = 0;
     uint32_t m_pendingDataLen = 0;
     uint32_t m_pendingSendDataLen = 0;
 

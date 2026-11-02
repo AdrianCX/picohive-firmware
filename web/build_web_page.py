@@ -22,7 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BASE = os.path.join(HERE, "base")
 FEATURES = os.path.join(HERE, "features")
 
-SKINS = ["cartoon", "clean", "xeno", "fallout"]
+SKINS = ["cartoon", "clean", "xeno"]
 FALLBACK = "cartoon"            # T() falls back to it, so it must have every key
 SHOWN = "clean"                 # the skin a first visit gets: <title> and <h1> before any script runs
 

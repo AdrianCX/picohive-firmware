@@ -6,6 +6,9 @@ Items needed:  Pico W or Pico 2 W, USB cable, Linux/macOS/WSL on Windows, git, p
 
 ## 1. Create a project
 
+Shortcut: run `claude` in this checkout and ask for a new project. It does the steps on this page for you, or
+guides you through them. The rest of this page is the manual way.
+
 ```bash
 ./template/create_project.sh --board pico2_w --title "Thermostat" thermostat ~/work/thermostat
 ```
