@@ -115,18 +115,28 @@ static void __no_inline_not_in_flash_func(upgrade_binary)(void *param)
 bool UpgradeHelper::m_isUpgrading = false;
 
 
-UpgradeHelper *UpgradeHelper::create()
+UpgradeHelper& UpgradeHelper::get()
 {
-    return new (std::align_val_t(32)) UpgradeHelper();
+    static UpgradeHelper *instance = new (std::align_val_t(32)) UpgradeHelper();
+    return *instance;
 }
 
 UpgradeHelper::UpgradeHelper()
 {
     clear();
-    m_isUpgrading = true;
 }
 
 UpgradeHelper::~UpgradeHelper()
+{
+}
+
+void UpgradeHelper::start()
+{
+    clear();
+    m_isUpgrading = true;
+}
+
+void UpgradeHelper::finish()
 {
     m_isUpgrading = false;
 }

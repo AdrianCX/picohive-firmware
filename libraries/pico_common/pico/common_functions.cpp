@@ -79,7 +79,7 @@ int main()
     
     if (cyw43_arch_init_with_country(get_wifi_country()))
     {
-        force_restart(RESTART_WIFI_INIT_FAILED);
+        request_restart(RESTART_WIFI_INIT_FAILED);
         return 1;
     }    
 
@@ -112,7 +112,7 @@ int main()
 
             app.on_wifi_failed();
 
-            force_restart(RESTART_WIFI_CONNECT_FAILED);
+            request_restart(RESTART_WIFI_CONNECT_FAILED);
             return 1;
         }
     }
@@ -148,7 +148,7 @@ int main()
             sleep_ms(1000);
         }
 
-        force_restart(RESTART_APP_START_FAILED);
+        request_restart(RESTART_APP_START_FAILED);
         return 1;
     }
 
@@ -189,15 +189,16 @@ int main()
         
         app.on_update(now_us);
 
+        update_restart(now_us);
+
         if (!access_point)
         {
             int status = cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA);
         
-            if (status != CYW43_LINK_UP)
+            if ((status != CYW43_LINK_UP) && !restart_pending())
             {
-                sleep_ms(1000);
-
-                force_restart(RESTART_WIFI_LINK_LOST);
+                trace("wifi link lost, status %d", status);
+                request_restart(RESTART_WIFI_LINK_LOST);
             }
         }
 

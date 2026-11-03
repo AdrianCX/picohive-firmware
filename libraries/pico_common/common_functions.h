@@ -15,6 +15,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "memory_stats.h"
 #include "os_platform.h"
+#include "pico_logger.h"
 
 class JsonView;
 
@@ -31,6 +32,8 @@ struct AppConfig
     void (*on_update)(uint64_t now_us);
     void (*on_config_update)(const JsonView& config);
 
+    bool (*can_restart)();
+
     const char* name;
     const char* version;
     uint32_t watchdog_timeout;
@@ -39,6 +42,17 @@ struct AppConfig
 AppConfig& app_info();
 	
 void get_app_info(AppConfig *config);
+
+void request_restart(restart_reason_t reason);
+
+void defer_upgrade();
+
+bool restart_pending();
+bool restart_allowed();
+
+void update_restart(uint64_t now_us);
+
+#define RESTART_MAX_WAIT_US (120000000ULL)
 
 	
 #ifdef __cplusplus

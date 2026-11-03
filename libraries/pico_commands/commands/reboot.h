@@ -14,7 +14,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 struct Reboot
 {
     static constexpr std::string_view name = "reboot";
-    static constexpr std::string_view help = "reboot - restart the board";
+    static constexpr std::string_view help = "reboot - restart the board, once the app is idle (at most 2 minutes)";
     static constexpr std::string_view ws_prefix = "/dbg/";
 
     bool on_header(CommandContext& ctx);

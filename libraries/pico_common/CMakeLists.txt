@@ -1,7 +1,10 @@
 add_library(pico_common INTERFACE)
 
 
-target_sources(pico_common INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/${PICO_OS_PLATFORM}/common_functions.cpp)
+target_sources(pico_common INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/${PICO_OS_PLATFORM}/common_functions.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/common_functions.cpp
+  )
 
 target_include_directories(pico_common INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/${PICO_OS_PLATFORM} ${CMAKE_CURRENT_SOURCE_DIR} ${PICO_OS_VERSION_INCLUDE_DIR})
 

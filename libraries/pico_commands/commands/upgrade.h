@@ -33,6 +33,7 @@ struct Upgrade
     void on_retained_cleared(CommandContext& ctx);
 
 private:
-    UpgradeHelper *m_helper = nullptr;
+    bool m_started = false;
     bool m_ok = false;
+    bool m_applying = false;
 };

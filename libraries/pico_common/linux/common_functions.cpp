@@ -96,7 +96,7 @@ static int run(void *)
     if (!app.on_wifi_ready())
     {
         trace("on_startup returned error");
-        force_restart(RESTART_APP_START_FAILED);
+        request_restart(RESTART_APP_START_FAILED);
         return 1;
     }
 
@@ -134,6 +134,8 @@ static int run(void *)
         McpServer::get().update(now_us);
 
         app.on_update(now_us);
+
+        update_restart(now_us);
     }
 
     trace("exiting");

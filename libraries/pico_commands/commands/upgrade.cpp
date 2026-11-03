@@ -9,10 +9,14 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "pico_logger.h"
 #include "upgrade.h"
+#include "common_functions.h"
 
 Upgrade::~Upgrade()
 {
-    delete m_helper;
+    if (m_started && !m_applying)
+    {
+        UpgradeHelper::get().finish();
+    }
 }
 
 bool Upgrade::on_header(CommandContext& ctx)
@@ -27,10 +31,11 @@ bool Upgrade::on_header(CommandContext& ctx)
         return ctx.reply("empty binary");
     }
 
-    m_helper = UpgradeHelper::create();
+    UpgradeHelper::get().start();
+    m_started = true;
     m_ok = true;
 
-    trace("upgrade: receiving %u bytes", ctx.message_length);
+    trace("upgrade: receiving %u bytes", (unsigned int)ctx.message_length);
     return true;
 }
 
@@ -41,10 +46,10 @@ bool Upgrade::on_chunk(CommandContext& ctx, const uint8_t *data, uint32_t len, b
         return true;
     }
 
-    if (!m_helper->storeData(data, len))
+    if (!UpgradeHelper::get().storeData(data, len))
     {
         m_ok = false;
-        return ctx.reply(m_helper->lastError());
+        return ctx.reply(UpgradeHelper::get().lastError());
     }
 
     return true;
@@ -52,7 +57,7 @@ bool Upgrade::on_chunk(CommandContext& ctx, const uint8_t *data, uint32_t len, b
 
 void Upgrade::on_abort(CommandContext&, const char *reason)
 {
-    trace("upgrade: abandoned (%s), %u bytes of firmware were in the staging area, the running firmware is untouched", reason, (m_helper != nullptr) ? m_helper->bytesWritten() : 0);
+    trace("upgrade: abandoned (%s), %u bytes of firmware were in the staging area, the running firmware is untouched", reason, (unsigned int)(m_started ? UpgradeHelper::get().bytesWritten() : 0));
 }
 
 void Upgrade::on_retained_cleared(CommandContext& ctx)
@@ -62,18 +67,20 @@ void Upgrade::on_retained_cleared(CommandContext& ctx)
         return;
     }
 
-    if (!m_helper->verifySignature())
+    UpgradeHelper& helper = UpgradeHelper::get();
+
+    if (!helper.verifySignature())
     {
-        trace("upgrade: refused, %s", m_helper->lastError());
-        ctx.reply(m_helper->lastError());
+        trace("upgrade: refused, %s", helper.lastError());
+        ctx.reply(helper.lastError());
         return;
     }
 
-    trace("upgrade: applying build %s", m_helper->buildId());
-	
-    m_helper->upgrade();
+    m_applying = true;
+    defer_upgrade();
 
-    ctx.reply("upgrade failed, still on the old firmware");
+    trace("upgrade: build %s verified", helper.buildId());
+    ctx.reply(restart_allowed() ? "applying the upgrade" : "applying the upgrade once the app is idle");
 }
 
 MQTT_COMMAND(Upgrade);

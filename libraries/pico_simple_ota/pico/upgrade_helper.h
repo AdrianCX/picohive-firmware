@@ -30,7 +30,11 @@ class UpgradeHelper : public IOtaPlaintextSink
 {
     UpgradeHelper();
 public:
-    static UpgradeHelper *create();
+    static UpgradeHelper& get();
+
+    void start();
+    void finish();
+
     virtual ~UpgradeHelper();
     
     bool clear();

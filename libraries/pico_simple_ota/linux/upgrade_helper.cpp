@@ -86,18 +86,28 @@ static std::string staging_path()
 
 bool UpgradeHelper::m_isUpgrading = false;
 
-UpgradeHelper *UpgradeHelper::create()
+UpgradeHelper& UpgradeHelper::get()
 {
-    return new UpgradeHelper();
+    static UpgradeHelper *instance = new UpgradeHelper();
+    return *instance;
 }
 
 UpgradeHelper::UpgradeHelper()
+{
+}
+
+UpgradeHelper::~UpgradeHelper()
+{
+    closeStaging(true);
+}
+
+void UpgradeHelper::start()
 {
     clear();
     m_isUpgrading = true;
 }
 
-UpgradeHelper::~UpgradeHelper()
+void UpgradeHelper::finish()
 {
     closeStaging(true);
     m_isUpgrading = false;

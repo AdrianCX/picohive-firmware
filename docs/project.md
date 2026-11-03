@@ -44,6 +44,7 @@ Notes:
 3.1. name is the path to your ELF to help with crash reports command.
 3.2. version is a user defined string or if missing the git version
 3.3. watchdog_timeout is how many milliseconds of silence before the board restarts itself. 0 turns it off.
+3.4. can_restart (optional) returns false while a restart would break something, ex: a display refresh. The reboot command and upgrades wait for it, at most 2 minutes (request_restart() in libraries/pico_common/common_functions.h). So does a lost Wi-Fi link; a failure before the main loop still restarts right away.
 
 ## How to use things
 

@@ -9,12 +9,13 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "pico_logger.h"
 #include "reboot.h"
+#include "common_functions.h"
 
 bool Reboot::on_header(CommandContext& ctx)
 {
-    trace("reboot: restarting");
-    force_restart(RESTART_REBOOT_COMMAND);
-    return true;
+    request_restart(RESTART_REBOOT_COMMAND);
+
+    return ctx.reply(restart_allowed() ? "restarting" : "restarting once the app is idle");
 }
 
 MQTT_COMMAND(Reboot);
