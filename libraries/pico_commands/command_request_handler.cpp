@@ -123,6 +123,11 @@ bool CommandRequestHandler::isAuthorized(HTTPHeader& header)
 
 bool CommandRequestHandler::isSameOrigin(HTTPHeader& header)
 {
+    if (!AUTH_REQUIRED)
+    {
+        return true;
+    }
+
     const char *origin = header.getHeaderValue("Origin");
     const char *host = header.getHeaderValue("Host");
     const char *origin_host = (origin != nullptr) ? strstr(origin, "://") : nullptr;
