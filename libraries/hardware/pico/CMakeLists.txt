@@ -1,3 +1,4 @@
+add_subdirectory(analog_microphone)
 add_subdirectory(pico_noexcept)
 add_subdirectory(pico_epaper)
 add_subdirectory(pico_sleep)
