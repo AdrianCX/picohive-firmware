@@ -92,10 +92,22 @@ cfg.global:
   cartoon: Global Config
   clean: Mode
   xeno: Operating doctrine
-cfg.localOnly:
-  cartoon: 'Local Only:'
+cfg.serverMode:
+  cartoon: 'Server:'
+  clean: Server
+  xeno: 'Allegiance:'
+cfg.modeLocal:
+  cartoon: Local only
   clean: Local only
-  xeno: 'Sever all contact:'
+  xeno: Sever all contact
+cfg.modeMqtt:
+  cartoon: Full MQTT managed
+  clean: Full MQTT managed
+  xeno: The distant listener
+cfg.modeLogs:
+  cartoon: Local, logs only
+  clean: Local, logs only
+  xeno: Whispers only
 cfg.server:
   cartoon: Server config
   clean: Server
@@ -130,6 +142,14 @@ cfgck.e.field:
   cartoon: a value inside is out of range
 cfgck.link:
   cartoon: 'Server settings from the link filled in: check them and save.'
+cfg.logs:
+  cartoon: Logs
+  clean: Logs
+  xeno: Whispers
+cfg.loghost:
+  cartoon: 'Log Server:'
+  clean: Log server
+  xeno: 'Oracle:'
 cfg.logport:
   cartoon: 'Logging Port:'
   clean: Log port

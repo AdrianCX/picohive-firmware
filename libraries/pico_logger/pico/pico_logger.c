@@ -242,30 +242,31 @@ int setup_debug_file(int32_t log_size)
 }
     
 static uint16_t upstream_port = 0;
+static int upstream_enabled = 0;
 
 static void connect_upstream(const ip_addr_t *remote_addr)
 {
     const ip_addr_t any_addr = {0};
 
-    upstream_pcb = udp_new_ip_type(IPADDR_TYPE_V4);
-    binary_upstream_pcb = udp_new_ip_type(IPADDR_TYPE_V4);
-    
-    err_t err = udp_bind(upstream_pcb, &any_addr, 5000);
-    if (err != 0)
+    if (upstream_pcb == NULL)
     {
-        trace("Failed binding upstream on local port, error: %d", err);
-        return;
+        upstream_pcb = udp_new_ip_type(IPADDR_TYPE_V4);
+        binary_upstream_pcb = udp_new_ip_type(IPADDR_TYPE_V4);
+
+        err_t err = udp_bind(upstream_pcb, &any_addr, 5000);
+        if (err == 0)
+        {
+            err = udp_bind(binary_upstream_pcb, &any_addr, 5001);
+        }
+
+        if (err != 0)
+        {
+            trace("Failed binding upstream on local port, error: %d", err);
+            return;
+        }
     }
-    
+
     udp_connect(upstream_pcb, remote_addr, upstream_port);
-    
-    err = udp_bind(binary_upstream_pcb, &any_addr, 5001);
-    if (err != 0)
-    {
-        trace("Failed binding upstream on local port, error: %d", err);
-        return;
-    }
-    
     udp_connect(binary_upstream_pcb, remote_addr, upstream_port+1);
 
     report_saved_crash();
@@ -282,49 +283,65 @@ static void logging_dns_callback(const char *name, const ip_addr_t *ipaddr, void
     connect_upstream(ipaddr);
 }
 
+int set_logging_server(const char *logging_server, uint16_t logging_port)
+{
+    if (!upstream_enabled)
+    {
+        return 0;
+    }
+
+    if (logging_server == NULL || logging_server[0] == 0 || logging_port == 0)
+    {
+        if (upstream_pcb != NULL)
+        {
+            udp_remove(upstream_pcb);
+            udp_remove(binary_upstream_pcb);
+            upstream_pcb = NULL;
+            binary_upstream_pcb = NULL;
+        }
+        return 0;
+    }
+
+    upstream_port = logging_port;
+
+    ip_addr_t remote_addr;
+    cyw43_arch_lwip_begin();
+    err_t err = dns_gethostbyname(logging_server, &remote_addr, logging_dns_callback, NULL);
+    cyw43_arch_lwip_end();
+
+    if (err == ERR_OK)
+    {
+        connect_upstream(&remote_addr);
+    }
+    else if (err != ERR_INPROGRESS)
+    {
+        trace("Failed resolving remote logging server address, address: %s, error: %d", logging_server, err);
+        return 0;
+    }
+
+    return 1;
+}
+
 int start_logging_server(const char *logging_server, uint16_t logging_port, const char *binary_name, const char *hardware_name, const char *software_version, uint32_t watchdog_ms, int access_point)
 { 
     set_watchdog(watchdog_ms);
 
     cm_backtrace_init(binary_name, hardware_name, software_version);
 
-    if (!access_point)
-    {
-        strncpy(address, ip4addr_ntoa(netif_ip4_addr(netif_list)), ADDRESS_SIZE-1);
-    }
-
-    if (logging_server == NULL || logging_server[0] == 0 || logging_port == 0)
-    {
-        // intentionally disabled logging
-        return 0;
-    }
-    
-    if (!access_point)
-    {
-        upstream_port = logging_port;
-
-        ip_addr_t remote_addr;
-        cyw43_arch_lwip_begin();
-        err_t err = dns_gethostbyname(logging_server, &remote_addr, logging_dns_callback, NULL);
-        cyw43_arch_lwip_end();
-
-        if (err == ERR_OK)
-        {
-            connect_upstream(&remote_addr);
-        }
-        else if (err != ERR_INPROGRESS)
-        {
-            trace("Failed resolving remote logging server address, address: %s, error: %d", logging_server, err);
-            return 0;
-        }
-    }
-
     if (watchdog_clamped_ms != 0)
     {
         trace("set_watchdog: timeout %lums exceeds max %lums, using max", (unsigned long)watchdog_clamped_ms, (unsigned long)WATCHDOG_SOFT_MAX_MS);
     }
 
-    return 1;
+    if (access_point)
+    {
+        return 0;
+    }
+
+    strncpy(address, ip4addr_ntoa(netif_ip4_addr(netif_list)), ADDRESS_SIZE-1);
+
+    upstream_enabled = 1;
+    return set_logging_server(logging_server, logging_port);
 }
 
 void update_watchdog()

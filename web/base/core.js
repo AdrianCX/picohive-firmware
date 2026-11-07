@@ -590,7 +590,7 @@ function decodeServerConfig() {
     document.getElementById("logport").value = cfg.logport;
     typeSecret("logkey", cfg.logkey);
 
-    syncLocalOnly();
+    syncServerMode();
 }
 
 // The QR code on the server's Device Config opens http://<board>/#cfg=<string>. It holds the
@@ -796,38 +796,43 @@ function cleanConfigValue(value) {
     return String(value).replace(/[\s\0]+/g, "");
 }
 
-function isLocalOnlyConfig(host, port) {
-    var h = cleanConfigValue(host);
-    var p = cleanConfigValue(port);
-    return !h || !p || Number(p) === 0;
+function serverMode() {
+    var host = cleanConfigValue(document.getElementById("host").value);
+    var port = cleanConfigValue(document.getElementById("port").value);
+    if (host && port && Number(port) !== 0) return "mqtt";
+    if (cleanConfigValue(document.getElementById("loghost").value)) return "logs";
+    return "local";
 }
 
-// Re-derive the Local Only checkbox from whatever host/port currently hold.
-function syncLocalOnly() {
-    var localOnly = isLocalOnlyConfig(document.getElementById("host").value,
-                                      document.getElementById("port").value);
-    document.getElementById("local_only").checked = localOnly;
-    updateLocalOnlyVisibility();
+function syncServerMode() {
+    document.getElementById("server_mode").value = serverMode();
+    updateServerModeVisibility();
 }
 
-function updateLocalOnlyVisibility() {
-    var localOnly = document.getElementById("local_only").checked;
-    document.getElementById("server_config_section").style.display = localOnly ? "none" : "block";
+function updateServerModeVisibility() {
+    var mode = document.getElementById("server_mode").value;
+    document.getElementById("server_config_section").style.display = (mode === "mqtt") ? "block" : "none";
+    document.getElementById("log_config_section").style.display = (mode === "local") ? "none" : "";
+    document.getElementById("loghost").placeholder = (mode === "mqtt") ? document.getElementById("host").value.trim() : "";
 }
 
-function toggleLocalOnly() {
-    if (document.getElementById("local_only").checked) {
+function changeServerMode() {
+    var mode = document.getElementById("server_mode").value;
+    if (mode !== "mqtt") {
         document.getElementById("host").value = "";
         document.getElementById("port").value = "";
         document.getElementById("tls").checked = false;
         document.getElementById("uuid").value = "";
         forgetSecret("pass");
-        document.getElementById("logport").value = "";
-        forgetSecret("logkey");
         document.getElementById("server_config").value = "";
         showServerConfigStatus(null);
     }
-    updateLocalOnlyVisibility();
+    if (mode === "local") {
+        document.getElementById("loghost").value = "";
+        document.getElementById("logport").value = "";
+        forgetSecret("logkey");
+    }
+    updateServerModeVisibility();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -837,11 +842,11 @@ document.addEventListener('DOMContentLoaded', () => {
     var tab = first ? first.dataset.tab : "Config";
     document.getElementById(tab).style.display = "block";
     document.getElementById("config_subtabs").style.display = (tab == "Config") ? "" : "none";
-    syncLocalOnly();
+    syncServerMode();
     applyLinkConfig(false);
 });
 
 // The board's settings just filled the fields: the warnings and sections that
 // depend on them follow.
 onConfigLoaded(updateWifiAuthWarn);
-onConfigLoaded(syncLocalOnly);
+onConfigLoaded(syncServerMode);

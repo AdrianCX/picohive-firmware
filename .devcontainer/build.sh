@@ -74,8 +74,8 @@ echo "You can upload the UF2s to the web UI on appropriate builds or copy via US
 echo ""
 echo "To see pico logs:"
 echo "- on the board's config page, set the MQTT host to this machine and the logging port (23500 by default)"
-echo "- to see logs displayed: python3 ${OS_DIR}/util/log_decrypt.py --port 23500"
-echo "- to save logs to a folder: python3 ${OS_DIR}/util/log_decrypt.py --port 23500 --out-dir logs"
+echo "- to see logs displayed: python3 ${OS_DIR}/tools/log_server.py"
+echo "- to save logs to a folder: python3 ${OS_DIR}/tools/log_server.py --out-dir logs"
 echo ""
 
 # Try to detect stack overflows: the outcome is printed here, the 10 deepest

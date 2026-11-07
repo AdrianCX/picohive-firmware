@@ -213,7 +213,6 @@ bool StoredConfig::set_field(const char *section, const char *key, const char *v
         return false;
     }
 
-    trace("config: %s.%s set to %s", section, key, value);
     return true;
 }
 
@@ -224,7 +223,6 @@ bool StoredConfig::set_field(const char *section, const char *key, uint32_t valu
         return false;
     }
 
-    trace("config: %s.%s set to %u", section, key, (unsigned int)value);
     return true;
 }
 

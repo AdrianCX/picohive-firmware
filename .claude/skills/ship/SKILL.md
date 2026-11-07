@@ -42,4 +42,4 @@ With PicoHive, check `fleet_status` / `get_device` until the device is back onli
 `read_log` for the boot. If it crashes or doesn't come back, use `list_crashes` / `get_crash` and debug from the source.
 Report times to the user in local time.
 
-Without PicoHive, ask the user to check the page's Firmware tab, or read the logs with `os/util/log_decrypt.py --port <port>`.
+Without PicoHive, ask the user to check the page's Firmware tab, or read the logs with the `log-server` skill (`os/.claude/skills/log-server/SKILL.md`).

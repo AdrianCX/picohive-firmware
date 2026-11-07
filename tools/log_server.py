@@ -13,17 +13,21 @@ Encrypted packet (see os/libraries/pico_logger/log_encryption.h):
 
 Plain text lines (no key configured on the device) are passed through as they are.
 
-Keys:
+Keys (without any, a new key is made and printed):
     --key HEX           one key for every device
     --keys FILE         a "<uuid> <hex key>" line per device, '#' starts a comment
     --genkey            print a new random AES-128 key and exit (--genkey 256 for AES-256)
 
-Examples:
-    python3 log_decrypt.py --genkey
-    python3 log_decrypt.py --port 23500 --keys keys.txt
-    python3 log_decrypt.py --port 23500 --key 00112233445566778899aabbccddeeff --out-dir ./logs
+The board sends its logs to the Log server set on its page (the MQTT host when empty),
+or to whatever log/server/<host>/<port> set over MCP or the WebSocket.
 
-Needs the 'cryptography' package (pip install cryptography).
+Examples:
+    python3 tools/log_server.py
+    python3 tools/log_server.py --genkey
+    python3 tools/log_server.py --keys keys.txt
+    python3 tools/log_server.py --key 00112233445566778899aabbccddeeff --out-dir ./logs
+
+Encrypted logs need the 'cryptography' package (pip install cryptography).
 """
 
 import argparse
@@ -40,7 +44,8 @@ try:
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     from cryptography.exceptions import InvalidTag
 except ImportError:
-    sys.exit("log_decrypt.py needs the 'cryptography' package: pip install cryptography")
+    AESGCM = None
+    InvalidTag = Exception
 
 VERSION = 1
 HEADER_SIZE = 29
@@ -74,6 +79,17 @@ def load_keys(path):
                 sys.exit("%s:%d: expected '<uuid> <hex key>'" % (path, number))
             keys[parts[0].lower()] = parse_key(parts[1])
     return keys
+
+
+def local_ip():
+    probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        probe.connect(("10.255.255.255", 1))
+        return probe.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
+    finally:
+        probe.close()
 
 
 class Decoder:
@@ -124,7 +140,7 @@ class Decoder:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--port", type=int, default=21000, help="UDP port to listen on (default 21000)")
+    parser.add_argument("--port", type=int, default=23500, help="UDP port to listen on (default 23500)")
     parser.add_argument("--bind", default="0.0.0.0", help="address to listen on")
     parser.add_argument("--key", help="hex key for every device")
     parser.add_argument("--keys", help="file with a '<uuid> <hex key>' line per device")
@@ -136,8 +152,14 @@ def main():
         print(secrets.token_hex(args.genkey // 8))
         return
 
+    if (args.key or args.keys) and AESGCM is None:
+        sys.exit("decrypting needs the 'cryptography' package: pip install cryptography")
+
     keys = load_keys(args.keys) if args.keys else {}
-    default_key = parse_key(args.key) if args.key else None
+    key_text = args.key
+    if not key_text and not args.keys and AESGCM is not None:
+        key_text = secrets.token_hex(16)
+    default_key = parse_key(key_text) if key_text else None
     decoder = Decoder(keys, default_key)
 
     if args.out_dir:
@@ -146,7 +168,18 @@ def main():
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((args.bind, args.port))
-    print("listening on %s:%d, %d device keys%s" % (args.bind, args.port, len(keys), ", default key" if default_key else ""))
+    ip = local_ip()
+    print("listening on %s:%d" % (args.bind, args.port))
+    print("on the board's Config page set:")
+    print("  Log server  %s" % ip)
+    print("  Log port    %d" % args.port)
+    if key_text:
+        print("  Log key     %s" % key_text)
+    elif args.keys:
+        print("  Log key     the device's key from %s" % args.keys)
+    else:
+        print("  Log key     empty (pip install cryptography for encrypted logs)")
+    print("or send log/server/%s/%d%s" % (ip, args.port, (" with body %s" % key_text) if key_text else ""), flush=True)
 
     while True:
         data, addr = sock.recvfrom(4096)

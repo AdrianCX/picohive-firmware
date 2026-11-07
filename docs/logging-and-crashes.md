@@ -36,16 +36,18 @@ trace("valve %d open for %u s", id, seconds);
 ## Receiving logs
 
 ```bash
-python3 os/util/log_decrypt.py --port 23500
-python3 os/util/log_decrypt.py --port 23500 --out-dir logs
+python3 os/tools/log_server.py
+python3 os/tools/log_server.py --out-dir logs
 ```
+
+Configure your address in the 'Log server field' on the device, MCP is capable of doing it automatically
 
 `nc -ukl 23500` works too, as long as logs aren't encrypted
 
 ### Encrypted logs
 
 - Put a log key on the config page (32 or 64 hex characters) and each line goes out as an AES-GCM packet
-- log_decrypt.py generates a key with: --genkey
+- log_server.py prints a new key when started without --key or --keys
 - receiver accepts key parameters via: --key or --keys
 - The packet format is at the top of `libraries/pico_logger/log_encryption.h`
 

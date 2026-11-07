@@ -73,7 +73,7 @@ These steps need hands on the board. In both modes, walk the user through them o
 1. Hold BOOTSEL, plug the board in, and copy `build/<board>/<name>.uf2` to the drive that appears.
    In automatic mode, offer to do the copy: look for an `RPI-RP2`/`RP2350` mount under `/run/media/$USER` or `/media/$USER`.
 2. Join the `picow_config` Wi-Fi (password in `os/config/wifi.h`, default `randompassword`) and open http://192.168.4.1.
-3. Fill in Wi-Fi, and optionally MQTT and the log port, on the Config tab, then save. The board restarts onto the user's Wi-Fi.
+3. Fill in Wi-Fi on the Config tab, and pick the Server mode: local only, full MQTT managed, or local with logs sent to a log server, then save. The board restarts onto the user's Wi-Fi.
 
 **PicoHive** (only if the picohive MCP tools are available, and only after the user agrees):
 - `add_device` with the project name (and a type if the user wants one). The secrets aren't returned: the user
@@ -83,7 +83,7 @@ These steps need hands on the board. In both modes, walk the user through them o
 - After the board reboots, check `fleet_status` / `get_device` until it shows online, and report its build id.
 
 Without PicoHive, point the user to `os/docs/getting-started.md` sections 5–6 (logs with
-`os/util/log_decrypt.py`, OTA from the board's page or MQTT).
+`os/tools/log_server.py`, OTA from the board's page or MQTT).
 
 ### Linux
 

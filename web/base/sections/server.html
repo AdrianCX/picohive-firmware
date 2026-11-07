@@ -1,8 +1,14 @@
 <table>
   <th colspan="2" data-t="cfg.global">Operating doctrine</th>
   <tr>
-    <td style="width: 130px;"><label data-t="cfg.localOnly">Sever all contact:</label></td>
-    <td><input type="checkbox" id="local_only" name="local_only" value="local_only" onchange="toggleLocalOnly()" /></td>
+    <td style="width: 130px;"><label data-t="cfg.serverMode">Allegiance:</label></td>
+    <td>
+      <select id="server_mode" name="server_mode" onchange="changeServerMode()">
+        <option value="local" data-t="cfg.modeLocal">Sever all contact</option>
+        <option value="mqtt" data-t="cfg.modeMqtt">The distant listener</option>
+        <option value="logs" data-t="cfg.modeLogs">Whispers only</option>
+      </select>
+    </td>
   </tr>
 </table>
 
@@ -16,11 +22,11 @@
   </tr>
   <tr>
     <td style="width: 130px;"><label data-t="cfg.host">Host:</label></td>
-    <td><input type="text" id="host" data-config="mqtt.host" name="host" value="" oninput="encodeServerConfig()" onchange="syncLocalOnly()"></td>
+    <td><input type="text" id="host" data-config="mqtt.host" name="host" value="" oninput="encodeServerConfig(); updateServerModeVisibility()"></td>
   </tr>
   <tr>
     <td style="width: 130px;"><label data-t="cfg.port">Port:</label></td>
-    <td><input type="text" id="port" data-config="mqtt.port" data-type="number" data-default="1883" name="port" value="" oninput="encodeServerConfig()" onchange="syncLocalOnly()"></td>
+    <td><input type="text" id="port" data-config="mqtt.port" data-type="number" data-default="1883" name="port" value="" oninput="encodeServerConfig()"></td>
   </tr>
   <tr>
     <td style="width: 130px;"><label data-t="cfg.tls">SSL/TLS:</label></td>
@@ -34,6 +40,15 @@
     <td style="width: 130px;"><label data-t="cfg.pass">Password:</label></td>
     <td><div class="secret-row"><input type="text" id="pass" data-config="mqtt.pass" name="pass" value="" data-hint="" autocomplete="off" spellcheck="false" oninput="encodeServerConfig()"><input type="button" id="pass_forget" data-t="cfg.forget" value="Forget" onclick="forgetSecret('pass')" style="display:none"></div></td>
   </tr>
+</table>
+</div>
+
+<table id="log_config_section">
+  <th colspan="2" data-t="cfg.logs">Whispers</th>
+  <tr>
+    <td style="width: 130px;"><label data-t="cfg.loghost">Oracle:</label></td>
+    <td><input type="text" id="loghost" data-config="log.host" data-trim name="loghost" value=""></td>
+  </tr>
   <tr>
     <td style="width: 130px;"><label data-t="cfg.logport">Confessional:</label></td>
     <td><input type="text" id="logport" data-config="log.port" data-type="number" data-default="23500" name="logport" value="" oninput="encodeServerConfig()"></td>
@@ -43,5 +58,3 @@
     <td><div class="secret-row"><input type="text" id="logkey" data-config="log.key" name="logkey" value="" data-hint="" autocomplete="off" spellcheck="false" oninput="encodeServerConfig()"><input type="button" id="logkey_forget" data-t="cfg.forget" value="Forget" onclick="forgetSecret('logkey')" style="display:none"></div></td>
   </tr>
 </table>
-</div>
-

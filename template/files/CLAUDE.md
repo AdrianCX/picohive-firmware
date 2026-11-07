@@ -43,6 +43,7 @@ Each of these has a step-by-step guide in `os/.claude/skills/`. Follow it when d
 - New command (MQTT / WebSocket / Telegram / Calendar / AI tool): `os/.claude/skills/add-command/SKILL.md`
 - New setting on the Config page: `os/.claude/skills/add-setting/SKILL.md`
 - Build and ship over the air to a device: `os/.claude/skills/ship/SKILL.md`
+- Receive and read a device's logs: `os/.claude/skills/log-server/SKILL.md`
 
 ## Docs
 

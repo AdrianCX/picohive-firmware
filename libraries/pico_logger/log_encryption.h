@@ -12,7 +12,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <stdint.h>
 
-// Encrypted log packet, AES-GCM, see util/log_decrypt.py for the receiving end:
+// Encrypted log packet, AES-GCM, see tools/log_server.py for the receiving end:
 //
 //   0   1   version (1)
 //   1  16   device id, the uuid in binary

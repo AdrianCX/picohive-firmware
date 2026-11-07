@@ -572,8 +572,30 @@ int setup_debug_file(int32_t log_size)
 }
 
 static uint16_t upstream_port = 0;
+static int upstream_enabled = 0;
 
-// On the loop thread, once the resolver thread has the logging server's address.
+void log_upstream_connect(const struct sockaddr_in *remote)
+{
+    int fd = (remote != NULL) ? open_upstream(remote, upstream_port) : -1;
+    int binary_fd = (remote != NULL) ? open_upstream(remote, upstream_port + 1) : -1;
+
+    pthread_mutex_lock(&trace_lock);
+    int old_fd = upstream_fd;
+    int old_binary_fd = binary_upstream_fd;
+    upstream_fd = fd;
+    binary_upstream_fd = binary_fd;
+    pthread_mutex_unlock(&trace_lock);
+
+    if (old_fd >= 0)
+    {
+        close(old_fd);
+    }
+    if (old_binary_fd >= 0)
+    {
+        close(old_binary_fd);
+    }
+}
+
 static void logging_server_resolved(int err, uint32_t addr, void *context)
 {
     const char *logging_server = (const char *)context;
@@ -589,8 +611,7 @@ static void logging_server_resolved(int err, uint32_t addr, void *context)
     remote.sin_family = AF_INET;
     remote.sin_addr.s_addr = addr;
 
-    upstream_fd = open_upstream(&remote, upstream_port);
-    binary_upstream_fd = open_upstream(&remote, upstream_port + 1);
+    log_upstream_connect(&remote);
 
     if (upstream_fd < 0)
     {
@@ -599,6 +620,24 @@ static void logging_server_resolved(int err, uint32_t addr, void *context)
     }
 
     report_saved_crash();
+}
+
+int set_logging_server(const char *logging_server, uint16_t logging_port)
+{
+    if (!upstream_enabled)
+    {
+        return 0;
+    }
+
+    if (logging_server == NULL || logging_server[0] == 0 || logging_port == 0)
+    {
+        log_upstream_connect(NULL);
+        return 0;
+    }
+
+    upstream_port = logging_port;
+    os_resolve(logging_server, logging_server_resolved, (void *)logging_server);
+    return 1;
 }
 
 int start_logging_server(const char *logging_server, uint16_t logging_port, const char *binary_name, const char *hardware_name, const char *software_version, uint32_t watchdog_ms, int access_point)
@@ -616,21 +655,13 @@ int start_logging_server(const char *logging_server, uint16_t logging_port, cons
         trace("set_watchdog: timeout %lums exceeds max %lums, using max", (unsigned long)watchdog_clamped_ms, (unsigned long)WATCHDOG_SOFT_MAX_MS);
     }
 
-    if (logging_server == NULL || logging_server[0] == 0 || logging_port == 0)
+    if (access_point)
     {
-        // intentionally disabled logging
         return 0;
     }
 
-    if (!access_point)
-    {
-        upstream_port = logging_port;
-
-        // As the board's dns callback: connect once the address is known.
-        os_resolve(logging_server, logging_server_resolved, (void *)logging_server);
-    }
-
-    return 1;
+    upstream_enabled = 1;
+    return set_logging_server(logging_server, logging_port);
 }
 
 void update_watchdog()

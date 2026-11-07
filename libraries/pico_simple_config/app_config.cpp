@@ -60,15 +60,6 @@ bool write_static_file(const char *file_name, uint8_t *address, uint32_t size)
 }
 
 
-static void apply_logging_config()
-{
-    set_logging_app_id(config.mqtt_user);
-    if (!set_logging_key(config.log_key))
-    {
-        trace("config: log key is not 32 or 64 hex characters, logging stays unencrypted");
-    }
-}
-
 bool read_config()
 {
     StoredConfig stored;
@@ -85,6 +76,11 @@ bool read_config()
 void apply_config(const JsonView& json)
 {
     uint32_t number = 0;
+    char old_server[MAX_CONFIG_STR] = {};
+    strncpy(old_server, config.log_server(), sizeof(old_server) - 1);
+    uint16_t old_port = config.logging_port;
+    char old_key[sizeof(config.log_key)] = {};
+    strncpy(old_key, config.log_key, sizeof(old_key) - 1);
 
     new (&config) Config();
 
@@ -108,6 +104,7 @@ void apply_config(const JsonView& json)
         config.mqtt_port = number;
     }
 
+    json.get_string("$.log.host", config.log_host, sizeof(config.log_host));
     if (json.get_uint("$.log.port", number) && (number <= 0xffff))
     {
         config.logging_port = number;
@@ -119,9 +116,19 @@ void apply_config(const JsonView& json)
     debug_config = DebugConfig();
     json.get_uint("$.debug.log_size", debug_config.offline_log_size);
 
-    trace("config: ssid=%s auth=%u country=%s web_user=%s host=%s user=%s tls=%d port=%u logport=%u offline_log=%u mcp=%d", config.wifi_ssid, (unsigned int)config.wifi_auth, config.wifi_country, config.web_user, config.mqtt_host, config.mqtt_user, config.mqtt_tls, config.mqtt_port, config.logging_port, (unsigned int)debug_config.offline_log_size, config.mcp_enabled);
+    trace("config: ssid=%s auth=%u country=%s web_user=%s host=%s user=%s tls=%d port=%u loghost=%s logport=%u offline_log=%u mcp=%d", config.wifi_ssid, (unsigned int)config.wifi_auth, config.wifi_country, config.web_user, config.mqtt_host, config.mqtt_user, config.mqtt_tls, config.mqtt_port, config.log_host, config.logging_port, (unsigned int)debug_config.offline_log_size, config.mcp_enabled);
 
-    apply_logging_config();
+    set_logging_app_id(config.mqtt_user);
+
+    if ((strcmp(old_key, config.log_key) != 0) && !set_logging_key(config.log_key))
+    {
+        trace("config: log key is not 32 or 64 hex characters, logging stays unencrypted");
+    }
+
+    if ((strcmp(old_server, config.log_server()) != 0) || (old_port != config.logging_port))
+    {
+        set_logging_server(config.log_server(), config.logging_port);
+    }
 }
 
 Config& get_config()

@@ -23,6 +23,8 @@ Pick the smallest kind that fits. Copy the matching example's shape instead of w
    - `static constexpr std::string_view help = "<name>[/<args>] - what it does";` (shown in `help` and to AI tools, so make it useful)
    - payload settings and handlers from the table above.
    - For streamed commands sent as retained MQTT messages, add `clears_retained = true` (see the streamed example).
+   - Parse `ctx.args` with the helpers in `os/libraries/pico_simple_util/pico_helper.h` (`PicoHelper::parse_number`,
+     `PicoHelper::parse_hex`), not `strtoul`/`atoi` or hand-written loops. Missing one? Add it to `PicoHelper`.
 2. Register it at the bottom of the `.cpp`, one macro per channel the user wants:
    `MQTT_COMMAND(X);`, `WS_COMMAND(X);`, `TELEGRAM_COMMAND(X);` (needs `pico_telegram`), `CALENDAR_COMMAND(X);`
    (needs `pico_calendar_commands`; an event titled `<device id>/<name>/args` runs it), `AI_COMMAND(X);` (an OpenAI tool:

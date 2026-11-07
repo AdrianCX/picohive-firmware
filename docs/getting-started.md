@@ -50,7 +50,7 @@ TODO: picohive config
 - On the remote end you can either use a management page or you can use the script below:
 
 ```bash
-python3 os/util/log_decrypt.py --port 23500
+python3 os/tools/log_server.py
 ```
 
 More info: [Logs and crashes](logging-and-crashes.md)

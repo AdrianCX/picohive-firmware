@@ -36,6 +36,7 @@ typedef enum {
 int set_watchdog(uint32_t watchdog_ms);
 int start_logging_server(const char *logging_server, uint16_t logging_port, const char *binary_name, const char *hardware_name, const char *software_version, uint32_t watchdog_ms, int access_point);
 void set_logging_app_id(const char *id);
+int set_logging_server(const char *logging_server, uint16_t logging_port);
 
 // AES-GCM key for the log lines sent upstream, 32 hex characters (AES-128) or 64 (AES-256), empty sends plain text.
 // Returns 0 for a key that doesn't parse, logs then go out as plain text.

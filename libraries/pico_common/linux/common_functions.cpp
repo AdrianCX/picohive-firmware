@@ -84,7 +84,7 @@ static int run(void *)
         trace("unconfigured: no MQTT and no logging server until the config has them");
     }
 
-    start_logging_server(get_config().mqtt_host, get_config().logging_port, app.name, PICO_BOARD, app.version, app.watchdog_timeout, unconfigured);
+    start_logging_server(get_config().log_server(), get_config().logging_port, app.name, PICO_BOARD, app.version, app.watchdog_timeout, unconfigured);
 
     trace("Starting, data in %s", os_data_dir());
 

@@ -11,7 +11,7 @@ People usually clone this repo only to create a new app. If the user wants to bu
 Don't write app code in this repo: apps live in their own project, created by that skill.
 
 Skills used inside a generated project (its `CLAUDE.md` points to them through `os/.claude/skills/`):
-`add-command`, `add-setting`, `ship`.
+`add-command`, `add-setting`, `ship`, `log-server`.
 
 ## Working on the OS itself
 

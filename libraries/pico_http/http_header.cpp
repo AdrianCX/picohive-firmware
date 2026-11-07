@@ -54,10 +54,6 @@ void HTTPHeader::print()
     {
         trace("HTTPHeader::print: this=%p, response[%s] numHeaders[%d]\n", this, safestr(m_path), m_numHeaders);
     }
-    for (int i=0;i<m_numHeaders;++i)
-    {
-        trace("HTTPHeader::print: this=%p, name[%s] value[%s]\n", this, safestr(m_headerName[i]), safestr(m_headerValue[i]));
-    }
 }
 
 const char *HTTPHeader::getHeaderValue(const char *headerName)

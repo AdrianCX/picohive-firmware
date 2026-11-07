@@ -31,6 +31,7 @@ struct Config
     char mqtt_pass[MAX_CONFIG_STR] = {};
     bool mqtt_tls = false;
     uint16_t mqtt_port = 1883;
+    char log_host[MAX_CONFIG_STR] = {};
     uint16_t logging_port = 23500;
     uint32_t wifi_auth = WIFI_AUTH_DEFAULT;
     char wifi_country[3] = "NL";
@@ -38,6 +39,8 @@ struct Config
     char web_pass[MAX_CONFIG_STR] = {};
     char log_key[MAX_CONFIG_STR + 1] = {};
     bool mcp_enabled = false;
+
+    const char *log_server() const { return (log_host[0] != 0) ? log_host : mqtt_host; }
 };
 
 struct DebugConfig

@@ -131,7 +131,7 @@ int main()
         dns_server_init((dns_server_t *) calloc(1, sizeof(dns_server_t)), &gw);
     }
 
-    start_logging_server(get_config().mqtt_host, get_config().logging_port, app.name, PICO_BOARD, app.version, app.watchdog_timeout, access_point);
+    start_logging_server(get_config().log_server(), get_config().logging_port, app.name, PICO_BOARD, app.version, app.watchdog_timeout, access_point);
     
     trace("Starting");
 
